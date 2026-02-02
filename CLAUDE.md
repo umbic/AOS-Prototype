@@ -17,12 +17,13 @@ The system knows you, knows your projects, and meets you where you are. It's les
 
 ### Key Principles
 - **Briefing-first** — Today page reads like a newspaper, not a dashboard
+- **Personal nudges** — System knows Kenny personally (e.g., Sixers game tonight)
+- **Agent-first task pages** — Every task shows which agent did the work, how, and with what confidence
 - **Dotti is the AI** — Green dot in corner is the chat interface (named "Dotti")
 - **Single client focus** — Prototype assumes Google as the only client
 - **Flat sidebar** — Projects and Workflows are top-level sections (no nesting)
 - **Workflows are horizontal** — Flow left-to-right, snake/wrap when needed
 - **Decision steps are distinct** — Human decision points have amber highlighting and lock icons
-- **Task pages are workspaces** — Structured briefings, not chat bubbles
 
 ## Current Architecture (Feb 2026)
 
@@ -30,8 +31,8 @@ The system knows you, knows your projects, and meets you where you are. It's les
 
 | Page | Layout | Description |
 |------|--------|-------------|
-| Today | MainLayout | Newspaper-style daily brief with Decisions section |
-| Task Detail | TaskLayout | Structured AI briefing |
+| Today | MainLayout | Newspaper-style daily brief with personal nudge |
+| Task Detail | TaskLayout | Agent card + summary + recommendation + actions |
 | Decision Step | Custom layout | Full decision interface with approve/changes/consult |
 | Creative Canvas | TaskLayout + custom | Full concept review workspace |
 | Workflow Detail | MainLayout | Horizontal workflow map with step panels |
@@ -45,7 +46,7 @@ The system knows you, knows your projects, and meets you where you are. It's les
 |-----------|-------|----------|
 | `Sidebar` | 240px | Flat sidebar with Projects + Workflows sections |
 | `SidebarThin` | 64px | Icon-only sidebar for task pages |
-| `TaskContextSidebar` | 288px | Right rail with project context |
+| `TaskContextSidebar` | 288px | Right rail with context, related work, history |
 | `MainLayout` | — | Sidebar + content + Dotti |
 | `TaskLayout` | — | Thin sidebar + content + context rail + Dotti |
 
@@ -72,7 +73,7 @@ The system knows you, knows your projects, and meets you where you are. It's les
 ```
 /app
   /today                    # Home - newspaper-style daily brief
-  /today/[id]               # Task detail - structured AI briefing
+  /today/[id]               # Task detail - agent-first briefing
   /project/[id]             # Project overview
   /project/[id]/creative/[conceptId]  # Creative Canvas
   /projects/new             # Project setup wizard (3 steps)
@@ -90,15 +91,15 @@ The system knows you, knows your projects, and meets you where you are. It's les
     sidebar-thin.tsx        # Icon-only sidebar (64px)
     main-layout.tsx         # Standard layout with full sidebar
     task-layout.tsx         # Task page layout with context rail
-    task-context-sidebar.tsx # Right rail for task pages
+    task-context-sidebar.tsx # Right rail with context, related work, history
+  /task
+    agent-card.tsx          # Agent info with confidence + expandable reasoning
+    call-agent-modal.tsx    # Modal for calling in additional agents
   /workflow
     workflow-map.tsx        # Horizontal workflow visualization
     step-summary-panel.tsx  # Panel for completed steps
     step-preview-panel.tsx  # Panel for upcoming steps
     workflow-template-preview.tsx  # Template preview in library
-  /today
-    decision-card.tsx       # Decision card with priority dot
-    decisions-section.tsx   # "Decisions Waiting on You" section
   /cards
     workflow-template-card.tsx  # Template card for library
   /chat
@@ -123,8 +124,7 @@ All sample data is in `/lib/data.ts`:
 - **Agents:** 24 agents across Strategy, Creative, Media, Operations
 - **Workflows:** 4 active workflows with horizontal step display
 - **Workflow Templates:** 11 reusable templates (Campaign, Content, Analysis, Operations)
-- **Decisions:** 2 pending decisions blocking workflows
-- **Docket Items:** 5 tasks with contextual AI briefings
+- **Docket Items:** 5 tasks with rich agent data (taskAgent, relatedWork, history)
 - **Creative Concepts:** 4 concepts for March Madness
 
 ## Commands
@@ -151,11 +151,28 @@ git push             # Triggers Vercel deploy
 
 ## Key Design Rules
 
+### Today Page
+- Personal nudge below date (e.g., "🏀 Don't forget — Sixers play at 10pm EST tonight")
+- No "X items on your plate" — that's obvious
+- Priority dots on task cards: red=decision, yellow=attention, green=ready
+- "Click any task to dive in" hint above task grid
+- Lead story highlighted with "Needs Attention" badge
+
 ### Sidebar (Single Client)
 - "Current client: Google" label below logo
 - Projects listed directly (flat, not nested)
 - Workflows listed directly (flat, not nested)
 - No client hierarchy or accordion
+
+### Task Detail Pages
+- **Agent Card** at top: agent name, completion time, duration, confidence indicator
+- Expandable "How I analyzed this" with reasoning bullet points
+- Summary card with key insights
+- Metrics grid (for analytics tasks)
+- "My Recommendation" panel with expandable options
+- Primary actions: View Full Report + Approve & Archive
+- Secondary actions: Edit, Dig deeper, Call in agent, Share, Snooze
+- Right rail: Context, Workflow progress, Related Work, History, Client Contact
 
 ### Workflows
 - Always horizontal, never vertical
@@ -172,12 +189,6 @@ git push             # Triggers Vercel deploy
 - "Materials to review" list with open buttons
 - Three choices: Approve, Request changes, Consult agent
 - Context sidebar with workflow progress
-
-### Task Pages
-- Use `TaskLayout` (thin sidebar + context rail)
-- Structured briefing, not chat bubbles
-- "My Recommendation" panel with expandable options
-- Action buttons at bottom
 
 ### Creative Canvas
 - Toolbar at top (navigate, zoom, annotate, compare)

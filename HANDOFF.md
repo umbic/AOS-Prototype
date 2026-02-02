@@ -9,95 +9,58 @@ AgencyOS is a high-fidelity prototype for an AI-agent-powered agency workflow ma
 
 ---
 
-## CURRENT STATE (Feb 2, 2026 - Evening)
+## CURRENT STATE (Feb 2, 2026 - Night)
 
 ### Session Summary
 
-This session implemented a major 6-feature plan plus UI simplification:
+This session focused on showcasing the AgencyOS value prop — AI agents doing real work with humans directing the system:
 
-1. **Decisions Section** on Today page
-2. **Workflow Node Interactions** with visual distinction for human steps
-3. **Decision Step View** for approving/rejecting workflow steps
-4. **Workflow Library** for browsing templates
-5. **Project Setup Wizard** (3-step flow)
-6. **Single-Client Simplification** (flattened sidebar, removed client nesting)
-
-Plus: Kenny's profile picture added throughout the app.
+1. **Task Detail Page Redesign** — Agent-first structure with confidence indicators and reasoning
+2. **Today Page Personalization** — Personal nudges, priority dots, removed redundant UI
 
 ---
 
-### New Features Implemented
+### Features Implemented This Session
 
-#### 1. Decisions Section (Today Page)
+#### 1. Task Detail Page Redesign
+**Location:** `/app/today/[id]/page.tsx`
+
+New agent-first layout structure:
+- **Agent Card** — Shows which agent completed the work, when, how long it took
+- **Confidence indicator** — High (green ●), Medium (amber ◐), Low (red ○)
+- **"How I analyzed this"** — Expandable section with bullet points of agent reasoning
+- **Summary** — Key insights from the agent's work
+- **Metrics** — Grid of KPIs (for analytics tasks)
+- **My Recommendation** — Agent's point of view with expandable options
+
+New action structure:
+- **Primary row:** View Full Report + Approve & Archive buttons
+- **Secondary row:** Edit, Dig deeper, Call in agent, Share, Snooze (small icon+text buttons)
+
+New "Call in Agent" modal:
+- Text input for describing what you need
+- 3 suggested agents relevant to task context
+- Link to browse all agents
+
+#### 2. Today Page Personalization
 **Location:** `/app/today/page.tsx`
 
-- "Decisions Waiting on You" section with count badge
-- Decision cards with priority dots (red=urgent, yellow=waiting, green=low)
-- Shows context, time estimate, deadline, and agent waiting
-- Cards link to Decision Step View
+Changes:
+- **Removed** "X items on your plate" text (obvious, not valuable)
+- **Added** personal nudge: "🏀 Don't forget — Sixers play at 10pm EST tonight"
+- **Removed** Decisions Section (tasks show in regular grid with priority dots)
+- **Added** "👆 Click any task to dive in" hint above task grid
+- **Added** priority dots to task cards:
+  - 🔴 Red + "DECISION" = urgent (needs decision)
+  - 🟡 Yellow + "ATTENTION" = attention (waiting on you)
+  - 🟢 Green + "READY" = discovery (completed work to review)
 
-#### 2. Workflow Node Interactions
-**Location:** `/components/workflow/workflow-map.tsx`
+#### 3. Context Sidebar Enhancements
+**Location:** `/components/layout/task-context-sidebar.tsx`
 
-- Visual distinction between agent steps (gray) and human decision steps (amber)
-- Lock icon on decision points
-- Click behaviors:
-  - Completed step → opens summary panel
-  - Current decision step → navigates to Decision Step View
-  - Upcoming step → opens preview panel
-- Right panel added to workflow detail page
-
-#### 3. Decision Step View
-**Route:** `/workflow/[id]/step/[stepId]`
-
-Full-page decision interface:
-- Header with back link, step name, "Decision Step" badge
-- "What needs your decision" card from agent
-- "Materials to review" list with open buttons
-- Decision options:
-  - **Approve** → proceed to next step
-  - **Request changes** → textarea for feedback
-  - **Consult** → select agent and ask question
-- Context sidebar with workflow progress
-
-#### 4. Workflow Library
-**Route:** `/workflow-library`
-
-- Grid of workflow template cards
-- Category tabs: All, Campaign, Content, Analysis, Operations
-- Search functionality
-- Preview panel with:
-  - Template stats (steps, decisions, duration)
-  - Step list with agent/human indicators
-  - Recommended agents
-  - "Use This Template" button → links to project setup
-
-#### 5. Project Setup Wizard
-**Route:** `/projects/new`
-
-3-step wizard:
-1. **Project Basics** - Client (Google, readonly), name, type, dates
-2. **Select Workflows** - Recommended templates based on type
-3. **Add Agents** - Auto-populated from selected workflows
-
-#### 6. Single-Client Simplification
-Removed multi-client complexity:
-- Sidebar now flat: Projects and Workflows are top-level sections
-- "Current client: Google" label below logo
-- Today page shows "Google" in masthead
-- Project wizard has Google pre-filled (not selectable)
-- Deleted `/app/client/[id]` route entirely
-
----
-
-### New Data Added
-
-| Type | Count | Description |
-|------|-------|-------------|
-| Agents | +2 | Compliance Agent, Scenario Agent |
-| Decisions | 2 | Pending decisions blocking workflows |
-| Workflow Templates | 11 | Reusable templates across 4 categories |
-| Types | +4 | Decision, DecisionPriority, WorkflowTemplate, WorkflowTemplateStep |
+New sections:
+- **Related Work** — Contextually relevant documents, briefs, tasks, feedback
+- **History** — Reverse chronological events (when agent completed, data collected, etc.)
 
 ---
 
@@ -105,15 +68,19 @@ Removed multi-client complexity:
 
 | Component | Purpose |
 |-----------|---------|
-| `components/today/decision-card.tsx` | Decision card with priority dot |
-| `components/today/decisions-section.tsx` | "Decisions Waiting" section |
-| `components/workflow/step-summary-panel.tsx` | Panel for completed steps |
-| `components/workflow/step-preview-panel.tsx` | Panel for upcoming steps |
-| `components/workflow/workflow-template-preview.tsx` | Template preview in library |
-| `components/cards/workflow-template-card.tsx` | Template card for library |
-| `app/workflow/[id]/step/[stepId]/page.tsx` | Decision step view |
-| `app/workflow-library/page.tsx` | Workflow template library |
-| `app/projects/new/page.tsx` | Project setup wizard |
+| `components/task/agent-card.tsx` | Agent info with confidence + expandable reasoning |
+| `components/task/call-agent-modal.tsx` | Modal for calling in additional agents |
+
+---
+
+### New Types Added
+
+| Type | Description |
+|------|-------------|
+| `ConfidenceLevel` | 'high' \| 'medium' \| 'low' |
+| `TaskAgent` | Agent completion info (id, name, completedAt, duration, confidence, reasoning) |
+| `RelatedWorkItem` | Related document/task reference (id, title, type, date) |
+| `HistoryItem` | Event in task history (timestamp, event, actor) |
 
 ---
 
@@ -121,29 +88,27 @@ Removed multi-client complexity:
 
 | File | Change |
 |------|--------|
-| `lib/types.ts` | Added Decision, WorkflowTemplate types |
-| `lib/data.ts` | Added 2 agents, decisions, 11 templates, helper functions |
-| `app/today/page.tsx` | Added Decisions section, Google label |
-| `components/workflow/workflow-map.tsx` | Visual distinction, click handlers |
-| `app/workflow/[id]/page.tsx` | Added right panel for step details |
-| `components/layout/sidebar.tsx` | Flattened to single-client, added Projects/Workflows sections |
-| `components/layout/sidebar-thin.tsx` | Kenny's avatar image |
-| `components/layout/sidebar-minimal.tsx` | Kenny's avatar image |
-| `components/workflow/step-detail-panel.tsx` | Kenny's avatar image |
-
-### Files Deleted
-
-| File | Reason |
-|------|--------|
-| `app/client/[id]/page.tsx` | Single-client architecture |
+| `lib/types.ts` | Added TaskAgent, RelatedWorkItem, HistoryItem, ConfidenceLevel |
+| `lib/data.ts` | Added rich mock data for all 5 docket items (taskAgent, relatedWork, history); updated priorities |
+| `app/today/page.tsx` | Personal nudge, removed decisions section, added priority dots + hint |
+| `app/today/[id]/page.tsx` | Complete redesign with agent-first structure |
+| `components/layout/task-context-sidebar.tsx` | Added Related Work and History sections |
 
 ---
 
-### Assets Added
+### Mock Data Updates
 
-| File | Description |
-|------|-------------|
-| `public/avatars/kenny.jpg` | Kenny's profile picture |
+Each docket item now has:
+- `taskAgent` — Specific agent, completion time, duration, confidence, reasoning bullets
+- `relatedWork` — 3-4 contextually relevant items per task
+- `history` — 3-4 events showing task progression
+
+Priority assignments:
+- `march-madness-concepts` → urgent (decision needed, red dot)
+- `holiday-metrics-review` → discovery (ready to review, green dot)
+- `audience-discovery` → attention (FYI, yellow dot)
+- `lin-call-prep` → attention (reminder, yellow dot)
+- `timeline-risk` → urgent (lead story)
 
 ---
 
@@ -152,41 +117,50 @@ Removed multi-client complexity:
 ```
 Today Page (newspaper brief)
     │
-    ├─→ Decisions Section
-    │       ↓ click card
-    │   Decision Step View (approve/changes/consult)
+    ├─→ Personal Nudge (Sixers game tonight)
     │
-    ├─→ Docket Items
-    │       ↓ click card
-    │   Task Detail Page (structured briefing)
-    │       ↓ click concept
-    │   Creative Canvas (full concept review)
+    ├─→ Lead Story (Needs Attention badge)
+    │       ↓ click
+    │   Task Detail Page (agent-first briefing)
+    │
+    ├─→ Task Grid (with priority dots)
+    │       ↓ click any task
+    │   Task Detail Page
+    │       ├─→ Agent Card (who did the work)
+    │       ├─→ Summary + Metrics
+    │       ├─→ My Recommendation
+    │       ├─→ Actions (approve, call agent, share, etc.)
+    │       └─→ Right Rail (context, related work, history)
     │
     └─→ Sidebar
             ├─→ Projects (direct list)
             ├─→ Workflows (direct list)
-            │       ↓ click workflow
-            │   Workflow Detail (horizontal map)
-            │       ↓ click step
-            │   Step Panel (summary/preview) or Decision Step View
-            │
             ├─→ Workflow Library
-            │       ↓ select template
-            │   Template Preview → Project Setup
-            │
-            └─→ Project Setup Wizard (3 steps)
+            └─→ Project Setup Wizard
 ```
 
 ---
 
 ## Key Design Decisions
 
-1. **Single client** — Prototype assumes Google, no client selector
-2. **Flat sidebar** — No nested accordions, Projects and Workflows at top level
-3. **Decision steps are distinct** — Amber highlighting, lock icons, separate view
-4. **Workflow templates** — 11 reusable templates in library
-5. **3-step project wizard** — Basics → Workflows → Agents
-6. **Click behaviors** — Different actions for completed/current/upcoming steps
+1. **Agent-first task pages** — Every task shows which agent did the work, with transparency into reasoning
+2. **Confidence indicators** — Visual cues for how certain the agent is
+3. **Personal nudges** — System knows Kenny beyond just work tasks
+4. **Priority dots** — Quick visual scan of what needs decision vs. what's ready
+5. **No redundant UI** — Removed "items on your plate" and separate decisions section
+6. **Call in agent** — Easy way to get help from another agent during review
+
+---
+
+## Previous Session Features (Still Active)
+
+From earlier sessions:
+- Workflow Node Interactions with visual distinction for human steps
+- Decision Step View for approving/rejecting workflow steps
+- Workflow Library for browsing templates
+- Project Setup Wizard (3-step flow)
+- Single-Client Simplification (flattened sidebar)
+- Kenny's profile picture throughout
 
 ---
 
@@ -198,6 +172,7 @@ Today Page (newspaper brief)
 - [ ] Calendar page improvements
 - [ ] Agent Store filtering and detail views
 - [ ] Team page with role management
+- [ ] Make personal nudge dynamic (pull from calendar, interests, etc.)
 
 ---
 
@@ -210,12 +185,9 @@ git push            # Triggers Vercel deploy
 ```
 
 ### Key Data Files
-- `/lib/data.ts` — All mock data including templates, decisions
-- `/lib/types.ts` — TypeScript interfaces
-
-### Architecture Doc
-Full site architecture exported to: `~/Desktop/AOS-Architecture.md`
+- `/lib/data.ts` — All mock data including taskAgent, relatedWork, history
+- `/lib/types.ts` — TypeScript interfaces including new agent types
 
 ---
 
-*Last updated: February 2, 2026 (Evening)*
+*Last updated: February 2, 2026 (Night)*
