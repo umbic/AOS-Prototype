@@ -409,7 +409,7 @@ export const agents: Agent[] = [
   },
 ]
 
-// Docket Items
+// Docket Items with rich task detail data
 export const docketItems: DocketItem[] = [
   {
     id: 'holiday-metrics-review',
@@ -426,6 +426,32 @@ export const docketItems: DocketItem[] = [
     type: 'review',
     workflowId: 'campaign-review',
     currentStep: 3,
+    taskAgent: {
+      id: 'analytics',
+      name: 'Analytics Agent',
+      completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+      duration: '12 minutes',
+      confidence: 'high',
+      reasoning: [
+        'Pulled data from Google Analytics, Meta Ads Manager, and TikTok Business',
+        'Compared against Q4 2023 Holiday Campaign benchmark',
+        'Cross-referenced with Lin\'s stated KPIs from October kickoff call',
+        'Identified TikTok overperformance as statistically significant (p < 0.05)',
+        'Flagged ROAS beat as presentation-worthy insight',
+      ],
+    },
+    relatedWork: [
+      { id: 'doc-1', title: 'Holiday Campaign Brief', type: 'brief', date: 'Oct 15' },
+      { id: 'doc-2', title: 'Q4 2023 Results Deck', type: 'document', date: 'Jan 2024' },
+      { id: 'task-1', title: 'TikTok channel expansion proposal', type: 'task', date: 'Nov 3' },
+      { id: 'feedback-1', title: 'Lin\'s feedback on TikTok pilot', type: 'feedback', date: 'Dec 12' },
+    ],
+    history: [
+      { timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), event: 'Analysis completed', actor: 'Analytics Agent' },
+      { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), event: 'Dashboard generated', actor: 'Dashboard Agent' },
+      { timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), event: 'Data collection finished', actor: 'Analytics Agent' },
+      { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), event: 'Workflow triggered', actor: 'Kenny' },
+    ],
   },
   {
     id: 'march-madness-concepts',
@@ -442,6 +468,33 @@ export const docketItems: DocketItem[] = [
     type: 'creative',
     workflowId: 'creative-dev',
     currentStep: 4,
+    taskAgent: {
+      id: 'concept-generator',
+      name: 'Concept Generator Agent',
+      completedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+      duration: '45 minutes',
+      confidence: 'high',
+      reasoning: [
+        'Analyzed Creative Brief v2 for brand direction and campaign objectives',
+        'Reviewed Google brand guidelines for visual and tonal consistency',
+        'Referenced Lin\'s Q4 feedback on previous March Madness work',
+        'Incorporated Trend Spotter\'s cultural insights on sports marketing',
+        'Generated 4 distinct directions covering different strategic angles',
+        'Visual Director validated feasibility of each concept',
+      ],
+    },
+    relatedWork: [
+      { id: 'doc-3', title: 'Creative Brief v2', type: 'brief', date: 'Feb 1' },
+      { id: 'doc-4', title: 'Google Brand Guidelines', type: 'document' },
+      { id: 'task-2', title: '2024 March Madness Post-Mortem', type: 'task', date: 'Apr 2024' },
+      { id: 'feedback-2', title: 'Lin\'s creative direction notes', type: 'feedback', date: 'Jan 28' },
+    ],
+    history: [
+      { timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), event: 'Concepts finalized', actor: 'Concept Generator Agent' },
+      { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), event: 'Visual development complete', actor: 'Visual Director Agent' },
+      { timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), event: 'Initial concepts drafted', actor: 'Concept Generator Agent' },
+      { timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), event: 'Brief received', actor: 'Brief Writer Agent' },
+    ],
   },
   {
     id: 'audience-discovery',
@@ -453,6 +506,31 @@ export const docketItems: DocketItem[] = [
     timeEstimate: '~15 min',
     agents: [agents.find(a => a.id === 'audience-insights')!],
     type: 'discovery',
+    taskAgent: {
+      id: 'audience-insights',
+      name: 'Audience Insights Agent',
+      completedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+      duration: '28 minutes',
+      confidence: 'medium',
+      reasoning: [
+        'Analyzed Q1 2025 first-party data from Google Analytics',
+        'Cross-referenced with third-party Converge audience data',
+        'Identified "Casual Sports Fans" segment showing unusual engagement patterns',
+        'Validated segment size against historical benchmarks',
+        'Noted segment has not been specifically targeted in past campaigns',
+        'Confidence is medium due to limited historical data on this segment',
+      ],
+    },
+    relatedWork: [
+      { id: 'doc-5', title: 'Q1 Audience Report', type: 'document', date: 'Jan 30' },
+      { id: 'task-3', title: 'Audience targeting strategy', type: 'task', date: 'Jan 20' },
+      { id: 'doc-6', title: 'Media Plan Draft', type: 'document', date: 'Feb 3' },
+    ],
+    history: [
+      { timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), event: 'Segment analysis completed', actor: 'Audience Insights Agent' },
+      { timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), event: 'Data pull initiated', actor: 'Audience Insights Agent' },
+      { timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), event: 'Discovery task auto-triggered', actor: 'System' },
+    ],
   },
   {
     id: 'lin-call-prep',
@@ -464,6 +542,31 @@ export const docketItems: DocketItem[] = [
     timeEstimate: '~20 min',
     agents: [agents.find(a => a.id === 'meeting-prepper')!],
     type: 'calendar',
+    taskAgent: {
+      id: 'meeting-prepper',
+      name: 'Meeting Prepper Agent',
+      completedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+      duration: '8 minutes',
+      confidence: 'high',
+      reasoning: [
+        'Reviewed Lin\'s calendar invite and previous meeting notes',
+        'Pulled Holiday Campaign results from recent analytics work',
+        'Checked March Madness workflow status for timeline update',
+        'Compiled Lin\'s stated preferences from client profile',
+        'Generated talking points based on likely questions',
+        'Attached relevant documents for quick reference',
+      ],
+    },
+    relatedWork: [
+      { id: 'doc-7', title: 'Holiday Performance Summary (1-pager)', type: 'document', date: 'Today' },
+      { id: 'doc-8', title: 'March Madness Status Update', type: 'document', date: 'Today' },
+      { id: 'task-4', title: 'Previous Lin call notes', type: 'task', date: 'Jan 15' },
+    ],
+    history: [
+      { timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), event: 'Prep materials ready', actor: 'Meeting Prepper Agent' },
+      { timestamp: new Date(Date.now() - 1.5 * 60 * 60 * 1000).toISOString(), event: 'Documents compiled', actor: 'Meeting Prepper Agent' },
+      { timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), event: 'Prep task auto-triggered (2 hours before meeting)', actor: 'System' },
+    ],
   },
   {
     id: 'timeline-risk',
@@ -475,6 +578,30 @@ export const docketItems: DocketItem[] = [
     timeEstimate: '~10 min',
     agents: [agents.find(a => a.id === 'timeline-manager')!],
     type: 'operational',
+    taskAgent: {
+      id: 'timeline-manager',
+      name: 'Timeline Manager Agent',
+      completedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+      duration: '5 minutes',
+      confidence: 'high',
+      reasoning: [
+        'Monitored all active workflow steps for March Madness project',
+        'Detected creative approval and localization steps still in progress',
+        'Calculated critical path to asset delivery deadline',
+        'Identified dependency chain that creates risk',
+        'Generated 3 mitigation options with trade-off analysis',
+      ],
+    },
+    relatedWork: [
+      { id: 'doc-9', title: 'March Madness Project Timeline', type: 'document', date: 'Jan 15' },
+      { id: 'task-5', title: 'Asset production kickoff', type: 'task', date: 'Feb 1' },
+      { id: 'doc-10', title: 'Localization requirements', type: 'document', date: 'Jan 28' },
+    ],
+    history: [
+      { timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), event: 'Risk assessment completed', actor: 'Timeline Manager Agent' },
+      { timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(), event: 'Timeline variance detected', actor: 'Timeline Manager Agent' },
+      { timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), event: 'Daily timeline check', actor: 'Timeline Manager Agent' },
+    ],
   },
 ]
 

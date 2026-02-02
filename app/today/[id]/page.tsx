@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Check, ChevronDown, Eye, Send, Zap, X, FileText, Calendar, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Check, ChevronDown, Eye, Zap, X, FileText, Pencil, MessageSquare, Bot, Share2, Clock } from 'lucide-react'
 import { TaskLayout } from '@/components/layout/task-layout'
+import { AgentCard } from '@/components/task/agent-card'
+import { CallAgentModal } from '@/components/task/call-agent-modal'
 import { getDocketItem, getWorkflow, getProject, getClient, docketItems, creativeConcepts } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
@@ -12,10 +14,10 @@ export default function TaskDetailPage() {
   const params = useParams()
   const router = useRouter()
   const docketItem = getDocketItem(params.id as string)
-  const [input, setInput] = useState('')
   const [expandedOption, setExpandedOption] = useState<string | null>('option-0')
   const [selectedOption, setSelectedOption] = useState<number>(0)
   const [showReportModal, setShowReportModal] = useState(false)
+  const [showCallAgentModal, setShowCallAgentModal] = useState(false)
   const [isApproving, setIsApproving] = useState(false)
   const [isApproved, setIsApproved] = useState(false)
 
@@ -39,12 +41,6 @@ export default function TaskDetailPage() {
   // Get task-specific content
   const taskContent = getTaskContent(docketItem.id)
 
-  const handleSend = () => {
-    if (!input.trim()) return
-    // In a real app, this would send the message
-    setInput('')
-  }
-
   const handleOptionSelect = (index: number) => {
     setSelectedOption(index)
     setExpandedOption(`option-${index}`)
@@ -65,6 +61,11 @@ export default function TaskDetailPage() {
 
   const handleSecondaryAction = () => {
     setShowReportModal(true)
+  }
+
+  const handleCallAgent = (agentId: string, request: string) => {
+    // In a real app, this would trigger the agent
+    console.log('Calling agent:', agentId, 'with request:', request)
   }
 
   return (
@@ -101,6 +102,13 @@ export default function TaskDetailPage() {
 
       {/* Briefing Content */}
       <div className="flex-1 overflow-y-auto px-8 py-6">
+        {/* Agent Card */}
+        {docketItem.taskAgent && (
+          <div className="mb-6">
+            <AgentCard agent={docketItem.taskAgent} />
+          </div>
+        )}
+
         {/* Summary Card */}
         <div className="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
           <div className="flex items-start gap-4">
@@ -169,7 +177,7 @@ export default function TaskDetailPage() {
         )}
 
         {/* My Recommendation Panel */}
-        <div className="bg-white rounded-xl border border-neutral-100 p-6">
+        <div className="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-6 h-6 rounded-full bg-[#86BC24] flex items-center justify-center">
               <span className="w-1.5 h-1.5 bg-white rounded-full" />
@@ -228,9 +236,12 @@ export default function TaskDetailPage() {
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-3 mt-6 pt-4 border-t border-neutral-100">
+        {/* Actions Section */}
+        <div className="bg-white rounded-xl border border-neutral-100 p-6">
+          {/* Primary action row */}
+          <div className="flex items-center gap-3 mb-4">
             <button
               onClick={handleSecondaryAction}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
@@ -266,6 +277,33 @@ export default function TaskDetailPage() {
                   {taskContent.primaryAction}
                 </>
               )}
+            </button>
+          </div>
+
+          {/* Secondary action row */}
+          <div className="flex items-center gap-2 pt-4 border-t border-neutral-100">
+            <button className="flex items-center gap-1.5 px-3 py-2 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors">
+              <Pencil className="w-3.5 h-3.5" />
+              Edit recommendation
+            </button>
+            <button className="flex items-center gap-1.5 px-3 py-2 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors">
+              <MessageSquare className="w-3.5 h-3.5" />
+              Ask to dig deeper
+            </button>
+            <button
+              onClick={() => setShowCallAgentModal(true)}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
+            >
+              <Bot className="w-3.5 h-3.5" />
+              Call in agent
+            </button>
+            <button className="flex items-center gap-1.5 px-3 py-2 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors">
+              <Share2 className="w-3.5 h-3.5" />
+              Share with team
+            </button>
+            <button className="flex items-center gap-1.5 px-3 py-2 text-xs text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors">
+              <Clock className="w-3.5 h-3.5" />
+              Snooze
             </button>
           </div>
         </div>
@@ -369,34 +407,12 @@ export default function TaskDetailPage() {
         </div>
       )}
 
-      {/* Chat input */}
-      <div className="px-8 py-4 border-t border-neutral-100 bg-white">
-        <div className="flex items-center gap-3 bg-neutral-50 rounded-xl px-4 py-3">
-          <span className="w-6 h-6 rounded-full bg-[#86BC24] flex items-center justify-center flex-shrink-0">
-            <span className="w-1.5 h-1.5 bg-white rounded-full" />
-          </span>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder="Ask a question or give direction..."
-            className="flex-1 bg-transparent text-sm text-black placeholder-neutral-400 outline-none"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className={cn(
-              'p-2 transition-colors',
-              input.trim()
-                ? 'text-[#86BC24] hover:text-[#6B9A1D]'
-                : 'text-neutral-300'
-            )}
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+      {/* Call Agent Modal */}
+      <CallAgentModal
+        isOpen={showCallAgentModal}
+        onClose={() => setShowCallAgentModal(false)}
+        onCallAgent={handleCallAgent}
+      />
     </TaskLayout>
   )
 }
@@ -430,7 +446,7 @@ function getTaskContent(taskId: string) {
         { title: 'Schedule creative review meeting' },
         { title: 'Request visual mockups for all 4' },
       ],
-      primaryAction: 'Confirm & Send to Lin',
+      primaryAction: 'Approve & Archive',
       secondaryAction: 'View Concepts',
     },
     'holiday-metrics-review': {
@@ -465,7 +481,7 @@ function getTaskContent(taskId: string) {
         { title: 'See detailed segment analysis' },
         { title: 'Discuss fit with campaign goals' },
       ],
-      primaryAction: 'Add to Media Plan',
+      primaryAction: 'Approve & Archive',
       secondaryAction: 'View Segment Data',
     },
     'timeline-risk': {
@@ -479,7 +495,7 @@ function getTaskContent(taskId: string) {
         { title: 'Push deadline by 3 days' },
         { title: 'Reduce asset variants' },
       ],
-      primaryAction: 'Start Parallel Track',
+      primaryAction: 'Approve & Archive',
       secondaryAction: 'View Timeline',
     },
     'lin-call-prep': {
@@ -493,7 +509,7 @@ function getTaskContent(taskId: string) {
         { title: 'Review prepared documents' },
         { title: 'Prepare for pushback scenarios' },
       ],
-      primaryAction: 'Mark as Ready',
+      primaryAction: 'Approve & Archive',
       secondaryAction: 'View Documents',
     },
   }
@@ -505,7 +521,7 @@ function getTaskContent(taskId: string) {
       { title: 'Review the details' },
       { title: 'Take action' },
     ],
-    primaryAction: 'Complete Task',
+    primaryAction: 'Approve & Archive',
     secondaryAction: 'View Details',
   }
 }

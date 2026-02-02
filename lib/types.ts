@@ -61,6 +61,31 @@ export interface Document {
   url?: string
 }
 
+// Task Agent info for task detail pages
+export type ConfidenceLevel = 'high' | 'medium' | 'low'
+
+export interface TaskAgent {
+  id: string
+  name: string
+  completedAt: string // ISO date string
+  duration: string // e.g., "12 minutes"
+  confidence: ConfidenceLevel
+  reasoning: string[] // bullet points of how it analyzed
+}
+
+export interface RelatedWorkItem {
+  id: string
+  title: string
+  type: 'task' | 'document' | 'brief' | 'feedback'
+  date?: string
+}
+
+export interface HistoryItem {
+  timestamp: string // ISO date string
+  event: string
+  actor?: string // agent name or user name
+}
+
 export interface DocketItem {
   id: string
   title: string
@@ -73,6 +98,10 @@ export interface DocketItem {
   type: 'review' | 'creative' | 'discovery' | 'calendar' | 'operational'
   workflowId?: string
   currentStep?: number
+  // New fields for task detail pages
+  taskAgent?: TaskAgent
+  relatedWork?: RelatedWorkItem[]
+  history?: HistoryItem[]
 }
 
 export interface Agent {
