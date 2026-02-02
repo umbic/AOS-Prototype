@@ -9,139 +9,90 @@ AgencyOS is a high-fidelity prototype for an AI-agent-powered agency workflow ma
 
 ---
 
-## NEXT SESSION: Implement Approved Design
+## CURRENT STATE (Feb 2, 2026)
 
-### What to Build
+### What Was Implemented
 
-The design has been approved. Reference file: **`/design-exploration-v4.html`**
+The approved newspaper-style design from `design-exploration-v4.html` has been implemented:
 
-Open this HTML file in a browser to see the exact design to implement.
+1. **New Sidebar** (`/components/layout/sidebar.tsx`)
+   - Logo: "AgencyOS" + green dot
+   - Today nav item with green active state
+   - PROJECTS section with expandable Google client
+   - Nested projects under client
+   - Main nav: Workflows, Calendar, Agent Store, Team
+   - Bottom: Settings, User profile (Kenny)
 
-### Implementation Tasks
+2. **New Main Layout** (`/components/layout/main-layout.tsx`)
+   - Sidebar + main content flex container
+   - Warm background (#FAF9F7)
+   - Dotti button fixed bottom-right (56px green circle with white dot)
+   - Removed `rightRail` prop (Dotti handles chat now)
 
-#### 1. Create New Sidebar Component
-**File:** `/components/layout/sidebar.tsx`
+3. **Newspaper-Style Today Page** (`/app/today/page.tsx`)
+   - Masthead: "Your Daily Brief" label, greeting, date
+   - Lead Story: Timeline risk with red "Needs Attention" tag
+   - 4-column grid for other items
+   - NO chat input (click Dotti to chat)
 
-Structure:
-- Logo: "AgencyOS" + green dot
-- Today nav item (active state = green background)
-- **PROJECTS** section header
-- Expandable client (Google) with chevron
-  - Nested projects: March Madness Campaign, Holiday Campaign, Q2 Brand Refresh
-- Main nav: Workflows, Calendar, Agent Store, Team
-- Bottom section: Settings, User profile (Kenny, Strategy Lead)
+4. **Updated All Pages** to use new MainLayout
+   - Removed rightRail props from agents, calendar, workflow pages
 
-Styling:
-- Width: 240px
-- Background: white
-- Border-right: 1px solid #e5e5e5
-- Nav items: 14px font, 10px 12px padding, 8px border-radius
-- Active state: #86BC24 background, white text
-- Projects nested with left padding
+### Deployed
 
-#### 2. Create New Main Layout Component
-**File:** `/components/layout/main-layout.tsx`
-
-- Flexbox container (sidebar + main content)
-- Sidebar on left
-- Main content area with warm background (#FAF9F7)
-- Dotti button fixed bottom-right (56px, green, white dot inside)
-
-#### 3. Redesign Today Page
-**File:** `/app/today/page.tsx`
-
-Structure:
-1. **Masthead** (centered)
-   - Label: "Your Daily Brief" (11px uppercase, green, letter-spacing)
-   - Title: "Good afternoon, Kenny" (32px, font-weight 300)
-   - Subtitle: "Monday, February 2 · 5 items on your plate" (14px, gray)
-   - Border-bottom: 2px solid black
-
-2. **Lead Story** (centered, padding 40px 0)
-   - Red tag: "Needs Attention" (10px uppercase, red on light red bg)
-   - Headline: "March Madness timeline at risk" (28px)
-   - Description paragraph (15px gray, max-width 560px)
-   - Border-bottom: 1px solid #e5e5e5
-
-3. **Columns** (4-column grid, gap 24px)
-   - Each item: border-top 1px, h3 (14px 500), p (12px gray)
-   - Hover: title turns green
-
-4. **NO chat input** — Dotti handles chat
-
-#### 4. Keep Dotti Chat Panel
-The existing `/components/chat/chat-panel-slide.tsx` should work, just ensure it's triggered by the Dotti button in the new layout.
-
-### Design Specs (from design-exploration-v4.html)
-
-| Element | Value |
-|---------|-------|
-| Sidebar width | 240px |
-| Sidebar bg | #FFFFFF |
-| Main content bg | #FAF9F7 |
-| Max content width | 800px |
-| Masthead title | 32px, weight 300 |
-| Lead story headline | 28px, weight 400 |
-| Column item title | 14px, weight 500 |
-| Green (active/accent) | #86BC24 |
-| Red (attention tag) | #EF4444 |
-| Tag background | #FEF2F2 |
-
-### Files to Delete/Replace
-
-These old components should be replaced:
-- `/components/layout/sidebar-minimal.tsx` → Replace with new `sidebar.tsx`
-- `/components/layout/main-layout-centered.tsx` → Replace with new `main-layout.tsx`
-
-### Testing
-
-After implementation:
-1. Run `npm run build` to check for errors
-2. Push to git (triggers Vercel deploy)
-3. Test on live site: https://aos-prototype.vercel.app
+Changes pushed to git → Vercel auto-deploy triggered.
 
 ---
 
-## Previous Context
+## NEXT SESSION: Review & Refine
 
-### Design Exploration Process (Feb 2, 2026)
+### User Will Provide Feedback
 
-1. User provided inspiration images (ChatGPT home, Privado Dining)
-2. Created 12 initial design explorations (`design-exploration.html`)
-3. User liked Magazine/Editorial style (Option L)
-4. Created 6 magazine variations without sidebar (`design-exploration-v2.html`)
-5. Added sidebar variations (`design-exploration-v3.html`)
-6. User approved final design with project hierarchy sidebar (`design-exploration-v4.html`)
+Test on live site: https://aos-prototype.vercel.app
 
-### Key Design Decisions
+Likely areas for feedback:
+- Spacing/typography tweaks
+- Sidebar behavior/styling
+- Column item content
+- Dotti interaction
+- Task detail page design
+
+### Files Changed This Session
+
+| File | Change |
+|------|--------|
+| `components/layout/sidebar.tsx` | Complete rewrite - project hierarchy |
+| `components/layout/main-layout.tsx` | Added Dotti button, removed rightRail |
+| `app/today/page.tsx` | Complete rewrite - newspaper style |
+| `app/today/[id]/page.tsx` | Updated to use MainLayout |
+| `app/project/[id]/page.tsx` | Updated to use MainLayout |
+| `app/agents/page.tsx` | Removed rightRail prop |
+| `app/calendar/page.tsx` | Removed rightRail prop |
+| `app/workflow/[id]/page.tsx` | Removed rightRail prop |
+
+### Old Components (Can Delete)
+
+These are no longer used:
+- `/components/layout/sidebar-minimal.tsx`
+- `/components/layout/main-layout-centered.tsx`
+
+---
+
+## Design Reference
+
+The approved design is: **`/design-exploration-v4.html`**
+
+Open in browser to compare against live implementation.
+
+---
+
+## Key Design Decisions
 
 1. **"Dotti" is the AI assistant** — The green dot chat button
 2. **No chat on home page** — Home is a briefing, click Dotti to chat
 3. **Newspaper/editorial style** — Masthead, lead story, columns
 4. **Project hierarchy sidebar** — Clients expand to show projects
 5. **Warm background** — #FAF9F7 instead of pure white/gray
-
----
-
-## Sample Data
-
-### User
-- **Kenny** - Strategy Lead
-
-### Client
-- **Google** - with contacts Lin Chen, David Park, Rachel Kim
-
-### Projects (under Google)
-1. **March Madness Campaign** - Active, 23 days to launch
-2. **Holiday Campaign** - Wrapping up, in review
-3. **Q2 Brand Refresh** - Early discovery phase
-
-### Docket Items (for Today page)
-1. **March Madness timeline at risk** (operational/urgent) — LEAD STORY
-2. Review holiday campaign performance (review)
-3. Creative concepts ready for March Madness (creative)
-4. Prep for 2pm call with Lin (calendar)
-5. New audience segment discovered (discovery)
 
 ---
 
@@ -161,6 +112,7 @@ After implementation:
 | `/lib/types.ts` | TypeScript interfaces |
 | `/tailwind.config.ts` | Design tokens |
 | `/design-exploration-v4.html` | **Approved design reference** |
+| `/error-log.md` | Session mistakes to avoid |
 
 ---
 
