@@ -17,23 +17,23 @@ export default function TodayPage() {
 
   return (
     <MainLayout>
-      <div className="max-w-4xl mx-auto px-8 py-10">
-        {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold text-stone-900 tracking-tight">
-            {getGreeting()}, {currentUser.firstName}.
+      <div className="max-w-4xl mx-auto px-8 py-12">
+        {/* Header - Deloitte style typography */}
+        <header className="mb-10">
+          <h1 className="text-display-2 text-black">
+            {getGreeting()}, {currentUser.firstName}<span className="text-deloitte-green">.</span>
           </h1>
-          <p className="mt-1 text-lg text-stone-500">
-            Here's your {formatDate(new Date())}.
+          <p className="mt-2 text-body-lg text-neutral-500">
+            {formatDate(new Date())}
           </p>
-          <p className="mt-2 text-sm text-stone-600">
+          <p className="mt-4 text-body text-neutral-600">
             You have {docketItems.length} things that need attention and a call with Lin at 2pm.
           </p>
         </header>
 
-        {/* Time-Aware Suggestion */}
+        {/* Time-Aware Suggestion - Deloitte dark style */}
         {showSuggestion && (
-          <div className="mb-8 animate-fade-in">
+          <div className="mb-10 animate-fade-in">
             <SuggestionCard
               timeAvailable="90 minutes"
               items={[
@@ -42,7 +42,6 @@ export default function TodayPage() {
               ]}
               onDismiss={() => setShowSuggestion(false)}
               onAccept={() => {
-                // Could navigate to first item
                 window.location.href = '/today/holiday-metrics-review'
               }}
             />
@@ -50,11 +49,11 @@ export default function TodayPage() {
         )}
 
         {/* Today's Docket */}
-        <section className="mb-12">
-          <h2 className="text-sm font-medium text-stone-500 uppercase tracking-wider mb-4">
+        <section className="mb-16">
+          <h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">
             On the docket
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {docketItems.map((item, i) => (
               <div key={item.id} className="animate-slide-up" style={{ animationDelay: `${i * 0.05}s` }}>
                 <DocketCard item={item} />
@@ -65,7 +64,7 @@ export default function TodayPage() {
 
         {/* Recent Projects */}
         <section>
-          <h2 className="text-sm font-medium text-stone-500 uppercase tracking-wider mb-4">
+          <h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">
             Recent
           </h2>
           <div className="grid grid-cols-3 gap-4">

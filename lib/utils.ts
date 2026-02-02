@@ -34,16 +34,17 @@ export function getRelativeTime(date: string): string {
   return `${diffDays} days ago`
 }
 
+// Deloitte-styled priority colors
 export function getPriorityColor(priority: string): string {
   switch (priority) {
     case 'urgent':
-      return 'bg-red-500'
+      return 'bg-black'
     case 'attention':
-      return 'bg-amber-500'
+      return 'bg-deloitte-green'
     case 'discovery':
-      return 'bg-blue-500'
+      return 'bg-neutral-400'
     default:
-      return 'bg-gray-400'
+      return 'bg-neutral-300'
   }
 }
 

@@ -1,7 +1,6 @@
 'use client'
 
-import { Clock, X, Sparkles } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { X, Zap } from 'lucide-react'
 
 interface SuggestionItem {
   title: string
@@ -22,44 +21,44 @@ export function SuggestionCard({
   onAccept,
 }: SuggestionCardProps) {
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200/60 p-5">
+    <div className="bg-black text-white p-6">
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-amber-600" />
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-deloitte-green flex items-center justify-center flex-shrink-0">
+            <Zap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-sm text-stone-700">
-              You have <span className="font-semibold text-stone-900">{timeAvailable} free</span> before your 2pm.
+            <p className="text-base">
+              You have <span className="font-semibold">{timeAvailable} free</span> before your 2pm.
             </p>
-            <p className="text-sm text-stone-600 mt-0.5">Here's what we can get done:</p>
+            <p className="text-neutral-400 mt-1">Here's what we can get done:</p>
           </div>
         </div>
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="p-1 text-stone-400 hover:text-stone-600 transition-colors"
+            className="p-1 text-neutral-400 hover:text-white transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-5 ml-14 space-y-2">
         {items.map((item, index) => (
           <li key={index} className="flex items-center gap-3 text-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-            <span className="text-stone-700">{item.title}</span>
-            <span className="text-stone-400 text-xs">({item.timeEstimate})</span>
+            <span className="w-1.5 h-1.5 bg-deloitte-green rounded-full flex-shrink-0" />
+            <span className="text-white">{item.title}</span>
+            <span className="text-neutral-500">({item.timeEstimate})</span>
           </li>
         ))}
       </ul>
 
-      <div className="mt-5 flex items-center gap-3">
+      <div className="mt-6 ml-14 flex items-center gap-4">
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="px-4 py-2 text-sm text-stone-600 hover:text-stone-800 transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-neutral-400 hover:text-white transition-colors"
           >
             Dismiss
           </button>
@@ -67,7 +66,7 @@ export function SuggestionCard({
         {onAccept && (
           <button
             onClick={onAccept}
-            className="px-4 py-2 text-sm font-medium text-white bg-stone-900 rounded-lg hover:bg-stone-800 transition-colors"
+            className="px-5 py-2.5 text-sm font-semibold uppercase tracking-wider bg-deloitte-green text-white hover:bg-deloitte-green-dark transition-colors"
           >
             Let's do it
           </button>
