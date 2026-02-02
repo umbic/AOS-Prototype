@@ -93,10 +93,11 @@ export default function TaskDetailPage() {
             <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-4">The Concepts</h3>
             <div className="grid grid-cols-2 gap-4">
               {taskContent.concepts.map((concept, i) => (
-                <div
+                <Link
                   key={i}
+                  href={`/project/march-madness/creative/concept-${i + 1}`}
                   className={cn(
-                    'bg-white rounded-xl border p-5 cursor-pointer transition-colors',
+                    'bg-white rounded-xl border p-5 cursor-pointer transition-colors block',
                     concept.recommended
                       ? 'border-[#86BC24]/30 hover:border-[#86BC24]'
                       : 'border-neutral-100 hover:border-neutral-200 opacity-60'
@@ -111,7 +112,7 @@ export default function TaskDetailPage() {
                   )}
                   <h4 className="text-base font-semibold text-black">{concept.name}</h4>
                   <p className="text-sm text-neutral-500 mt-2">{concept.description}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
