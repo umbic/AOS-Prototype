@@ -1,18 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Check, ChevronDown, Eye, Send, Zap } from 'lucide-react'
+import { ArrowLeft, Check, ChevronDown, Eye, Send, Zap, X, FileText, Calendar, ExternalLink } from 'lucide-react'
 import { TaskLayout } from '@/components/layout/task-layout'
 import { getDocketItem, getWorkflow, getProject, getClient, docketItems, creativeConcepts } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
 export default function TaskDetailPage() {
   const params = useParams()
+  const router = useRouter()
   const docketItem = getDocketItem(params.id as string)
   const [input, setInput] = useState('')
-  const [expandedOption, setExpandedOption] = useState<string | null>('option-1')
+  const [expandedOption, setExpandedOption] = useState<string | null>('option-0')
+  const [selectedOption, setSelectedOption] = useState<number>(0)
+  const [showReportModal, setShowReportModal] = useState(false)
+  const [isApproving, setIsApproving] = useState(false)
+  const [isApproved, setIsApproved] = useState(false)
 
   if (!docketItem) {
     return (
@@ -38,6 +43,28 @@ export default function TaskDetailPage() {
     if (!input.trim()) return
     // In a real app, this would send the message
     setInput('')
+  }
+
+  const handleOptionSelect = (index: number) => {
+    setSelectedOption(index)
+    setExpandedOption(`option-${index}`)
+  }
+
+  const handleApprove = () => {
+    setIsApproving(true)
+    // Simulate approval action
+    setTimeout(() => {
+      setIsApproved(true)
+      setIsApproving(false)
+      // Navigate back to today after a brief moment
+      setTimeout(() => {
+        router.push('/today')
+      }, 1500)
+    }, 800)
+  }
+
+  const handleSecondaryAction = () => {
+    setShowReportModal(true)
   }
 
   return (
@@ -154,35 +181,45 @@ export default function TaskDetailPage() {
           {/* Expandable options */}
           <div className="space-y-3">
             {taskContent.options.map((option, i) => (
-              <div key={i} className="border border-neutral-100 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setExpandedOption(expandedOption === `option-${i}` ? null : `option-${i}`)}
-                  className="w-full flex items-center justify-between px-4 py-3 hover:bg-neutral-50"
-                >
-                  <div className="flex items-center gap-3">
+              <div key={i} className={cn(
+                'border rounded-lg overflow-hidden transition-colors',
+                selectedOption === i ? 'border-[#86BC24]/30 bg-[#86BC24]/5' : 'border-neutral-100'
+              )}>
+                <div className="flex items-center">
+                  {/* Radio button - clickable to select */}
+                  <button
+                    onClick={() => handleOptionSelect(i)}
+                    className="pl-4 py-3 pr-2 hover:bg-neutral-50/50"
+                  >
                     <span className={cn(
-                      'w-4 h-4 rounded-full border-2 flex items-center justify-center',
-                      i === 0 ? 'border-[#86BC24]' : 'border-neutral-300'
+                      'w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors',
+                      selectedOption === i ? 'border-[#86BC24]' : 'border-neutral-300 hover:border-neutral-400'
                     )}>
-                      {i === 0 && <span className="w-2 h-2 bg-[#86BC24] rounded-full" />}
+                      {selectedOption === i && <span className="w-2.5 h-2.5 bg-[#86BC24] rounded-full" />}
                     </span>
+                  </button>
+                  {/* Expand/collapse button */}
+                  <button
+                    onClick={() => setExpandedOption(expandedOption === `option-${i}` ? null : `option-${i}`)}
+                    className="flex-1 flex items-center justify-between pr-4 py-3 hover:bg-neutral-50/50"
+                  >
                     <span className={cn(
                       'text-sm',
-                      i === 0 ? 'font-medium text-black' : 'text-neutral-600'
+                      selectedOption === i ? 'font-medium text-black' : 'text-neutral-600'
                     )}>
                       {option.title}
                     </span>
-                  </div>
-                  <ChevronDown className={cn(
-                    'w-4 h-4 text-neutral-400 transition-transform',
-                    expandedOption === `option-${i}` && 'rotate-180'
-                  )} />
-                </button>
+                    <ChevronDown className={cn(
+                      'w-4 h-4 text-neutral-400 transition-transform',
+                      expandedOption === `option-${i}` && 'rotate-180'
+                    )} />
+                  </button>
+                </div>
                 {expandedOption === `option-${i}` && option.details && (
-                  <div className="px-4 pb-4 border-t border-neutral-100 bg-neutral-50">
+                  <div className="px-4 pb-4 border-t border-neutral-100 bg-neutral-50/50">
                     <p className="text-sm text-neutral-600 py-3">{option.details}</p>
                     {option.preview && (
-                      <div className="bg-white rounded-lg p-3 text-sm text-neutral-700 border border-neutral-200">
+                      <div className="bg-white rounded-lg p-3 text-sm text-neutral-700 border border-neutral-200 whitespace-pre-line">
                         {option.preview}
                       </div>
                     )}
@@ -194,17 +231,143 @@ export default function TaskDetailPage() {
 
           {/* Action buttons */}
           <div className="flex items-center gap-3 mt-6 pt-4 border-t border-neutral-100">
-            <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50">
+            <button
+              onClick={handleSecondaryAction}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors"
+            >
               <Eye className="w-4 h-4" />
               {taskContent.secondaryAction}
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-white bg-[#86BC24] rounded-lg hover:bg-[#6B9A1D]">
-              <Check className="w-4 h-4" />
-              {taskContent.primaryAction}
+            <button
+              onClick={handleApprove}
+              disabled={isApproving || isApproved}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm rounded-lg transition-all',
+                isApproved
+                  ? 'bg-[#6B9A1D] text-white'
+                  : isApproving
+                    ? 'bg-[#86BC24]/70 text-white cursor-wait'
+                    : 'bg-[#86BC24] text-white hover:bg-[#6B9A1D]'
+              )}
+            >
+              {isApproved ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Done!
+                </>
+              ) : isApproving ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4" />
+                  {taskContent.primaryAction}
+                </>
+              )}
             </button>
           </div>
         </div>
       </div>
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowReportModal(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#86BC24]/10 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[#86BC24]" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-black">{docketItem.title}</h2>
+                  <p className="text-sm text-neutral-500">{docketItem.projectName}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="px-6 py-6 overflow-y-auto max-h-[60vh]">
+              {/* Summary Section */}
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-3">Executive Summary</h3>
+                <p className="text-neutral-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: taskContent.summary }} />
+              </div>
+
+              {/* Metrics if available */}
+              {taskContent.metrics && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-3">Performance Metrics</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {taskContent.metrics.map((metric, i) => (
+                      <div key={i} className="bg-neutral-50 rounded-lg p-3">
+                        <p className="text-xs text-neutral-500">{metric.label}</p>
+                        <p className="text-xl font-semibold text-black">{metric.value}</p>
+                        {metric.change && (
+                          <p className={cn('text-xs', metric.change > 0 ? 'text-[#86BC24]' : 'text-red-500')}>
+                            {metric.change > 0 ? '+' : ''}{metric.change}% {metric.changeLabel}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recommendation */}
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-3">AI Recommendation</h3>
+                <div className="bg-[#86BC24]/5 border border-[#86BC24]/20 rounded-lg p-4">
+                  <p className="text-neutral-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: taskContent.recommendation }} />
+                </div>
+              </div>
+
+              {/* Selected Action */}
+              <div>
+                <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-3">Selected Action</h3>
+                <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
+                  <span className="w-5 h-5 rounded-full border-2 border-[#86BC24] flex items-center justify-center">
+                    <span className="w-2.5 h-2.5 bg-[#86BC24] rounded-full" />
+                  </span>
+                  <span className="text-sm font-medium text-black">{taskContent.options[selectedOption]?.title}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center gap-3 px-6 py-4 border-t border-neutral-100 bg-neutral-50">
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="flex-1 px-4 py-2.5 text-sm text-neutral-600 bg-white border border-neutral-200 rounded-lg hover:bg-neutral-100 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowReportModal(false)
+                  handleApprove()
+                }}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-white bg-[#86BC24] rounded-lg hover:bg-[#6B9A1D] transition-colors"
+              >
+                <Check className="w-4 h-4" />
+                {taskContent.primaryAction}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Chat input */}
       <div className="px-8 py-4 border-t border-neutral-100 bg-white">
