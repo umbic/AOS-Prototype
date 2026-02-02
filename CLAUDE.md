@@ -139,9 +139,24 @@ Auto-deploys to Vercel on push to `main`.
 5. **Colors:** Deloitte palette, warm background (`#FAF9F7`)
 6. **Typography:** Editorial feel, generous spacing
 
+## Session Workflow
+
+1. **Read `handoff.md` first** — Contains current state and next steps
+2. **Check `error-log.md`** — Learn from past mistakes
+3. **Use TypeScript check before build** — `npx tsc --noEmit` is faster
+4. **Push to git for testing** — Vercel handles deployment, test on live site
+5. **Don't run multiple builds** — Kill stale processes first
+
+## Before Editing Components
+
+1. **Read the file first** — Write tool requires reading first
+2. **Grep for usages** — Check what props are used before changing interfaces
+3. **Update all usages together** — Don't leave TypeScript errors
+
 ## Notes
 
 - This is a **prototype** - functionality is simulated with mock data
 - AI responses are contextual but predefined (no real AI backend)
 - Designed for desktop; mobile responsiveness is limited
 - Dotti (green dot) is always present in bottom-right corner
+- See `/error-log.md` for session mistakes to avoid
