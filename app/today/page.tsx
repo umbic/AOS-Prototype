@@ -33,7 +33,11 @@ export default function TodayPage() {
       <div className="px-12 py-10">
         <div className="max-w-[800px] mx-auto">
           {/* Masthead */}
-          <div className="text-center pb-6 border-b-2 border-black mb-8">
+          <div className="text-center pb-6 border-b-2 border-black mb-8 relative">
+            {/* Current Client Label */}
+            <div className="absolute right-0 top-0 text-[11px] text-neutral-400">
+              Google
+            </div>
             <div className="text-[11px] uppercase tracking-[0.15em] text-[#86BC24] font-semibold mb-2">
               Your Daily Brief
             </div>

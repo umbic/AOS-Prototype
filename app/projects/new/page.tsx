@@ -3,9 +3,9 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check, Bot, GitBranch, Calendar, ChevronDown } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Bot, GitBranch, Calendar } from 'lucide-react'
 import { MainLayout } from '@/components/layout/main-layout'
-import { clients, workflowTemplates, agents, getWorkflowTemplate } from '@/lib/data'
+import { workflowTemplates, agents, getWorkflowTemplate } from '@/lib/data'
 import { Agent } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -25,8 +25,7 @@ function NewProjectContent() {
 
   const [currentStep, setCurrentStep] = useState<Step>(1)
 
-  // Step 1: Project Basics
-  const [selectedClient, setSelectedClient] = useState('')
+  // Step 1: Project Basics (client is hardcoded to Google)
   const [projectName, setProjectName] = useState('')
   const [projectType, setProjectType] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -95,7 +94,7 @@ function NewProjectContent() {
 
   const canProceed = () => {
     if (currentStep === 1) {
-      return selectedClient && projectName && projectType
+      return projectName && projectType
     }
     if (currentStep === 2) {
       return selectedTemplates.length > 0
@@ -167,21 +166,11 @@ function NewProjectContent() {
             {/* Step 1: Project Basics */}
             {currentStep === 1 && (
               <div className="space-y-6">
-                {/* Client */}
+                {/* Client (hardcoded to Google) */}
                 <div>
                   <label className="block text-sm font-medium text-stone-900 mb-2">Client</label>
-                  <div className="relative">
-                    <select
-                      value={selectedClient}
-                      onChange={(e) => setSelectedClient(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-sm text-stone-900 appearance-none focus:outline-none focus:ring-2 focus:ring-[#86BC24]/20 focus:border-[#86BC24]"
-                    >
-                      <option value="">Select a client...</option>
-                      {clients.map(client => (
-                        <option key={client.id} value={client.id}>{client.name}</option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" />
+                  <div className="px-4 py-3 bg-stone-100 border border-stone-200 rounded-lg text-sm text-stone-700">
+                    Google
                   </div>
                 </div>
 
