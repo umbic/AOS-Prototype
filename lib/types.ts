@@ -111,6 +111,8 @@ export interface WorkflowStep {
   timeEstimate?: string
   documents?: string[]
   notes?: string[]
+  stepType?: 'agent' | 'human_decision' | 'hybrid'
+  decisionId?: string
 }
 
 export interface ChatMessage {
@@ -172,4 +174,44 @@ export interface AudienceSegment {
   characteristics: string[]
   affinities: string[]
   dataSources: string[]
+}
+
+// Decision for workflow-blocking items
+export type DecisionPriority = 'urgent' | 'waiting' | 'low'
+
+export interface Decision {
+  id: string
+  workflowId: string
+  stepId: string
+  title: string
+  context: string
+  priority: DecisionPriority
+  clientName: string
+  workflowName: string
+  timeEstimate: string
+  deadline?: string
+  agentWaiting?: string
+  status: 'pending' | 'completed'
+}
+
+// Workflow Templates for Library
+export type WorkflowTemplateCategory = 'campaign' | 'content' | 'analysis' | 'operations'
+
+export interface WorkflowTemplate {
+  id: string
+  name: string
+  description: string
+  category: WorkflowTemplateCategory
+  estimatedDuration: string
+  stepCount: number
+  decisionPoints: number
+  steps: WorkflowTemplateStep[]
+  recommendedAgents: string[]
+}
+
+export interface WorkflowTemplateStep {
+  name: string
+  type: 'agent' | 'human'
+  agentIds?: string[]
+  assigneeRole?: string
 }

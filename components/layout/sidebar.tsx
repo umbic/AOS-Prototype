@@ -13,6 +13,8 @@ import {
   Users,
   Workflow as WorkflowIcon,
   FolderOpen,
+  GitBranch,
+  Plus,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { clients, getProjectsByClient, workflows } from '@/lib/data'
@@ -126,20 +128,29 @@ export function Sidebar() {
                 <div className="ml-3 border-l border-neutral-100 pl-2">
                   {/* Projects subsection */}
                   <div className="mt-1">
-                    <button
-                      onClick={() => toggleSection(`${client.id}-projects`)}
-                      className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-700 rounded transition-colors"
-                    >
-                      <ChevronRight
-                        className={cn(
-                          'w-3 h-3 transition-transform duration-200',
-                          projectsExpanded && 'rotate-90'
-                        )}
-                      />
-                      <FolderOpen className="w-3.5 h-3.5" />
-                      Projects
-                      <span className="ml-auto text-[10px] text-neutral-400">{projects.length}</span>
-                    </button>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => toggleSection(`${client.id}-projects`)}
+                        className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-700 rounded transition-colors"
+                      >
+                        <ChevronRight
+                          className={cn(
+                            'w-3 h-3 transition-transform duration-200',
+                            projectsExpanded && 'rotate-90'
+                          )}
+                        />
+                        <FolderOpen className="w-3.5 h-3.5" />
+                        Projects
+                        <span className="ml-auto text-[10px] text-neutral-400">{projects.length}</span>
+                      </button>
+                      <Link
+                        href="/projects/new"
+                        className="p-1 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded transition-colors"
+                        title="New Project"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                     {projectsExpanded && (
                       <div className="ml-5 space-y-0.5 mt-1">
                         {projects.map(project => (
@@ -158,7 +169,7 @@ export function Sidebar() {
                         ))}
                       </div>
                     )}
-                  </div>
+                    </div>
 
                   {/* Workflows subsection */}
                   <div className="mt-1">
@@ -214,6 +225,12 @@ export function Sidebar() {
             icon={<Store className="w-[18px] h-[18px]" />}
             label="Agent Store"
             isActive={pathname === '/agents'}
+          />
+          <NavItem
+            href="/workflow-library"
+            icon={<GitBranch className="w-[18px] h-[18px]" />}
+            label="Workflow Library"
+            isActive={pathname === '/workflow-library'}
           />
           <NavItem
             href="/team"

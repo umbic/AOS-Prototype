@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { MainLayout } from '@/components/layout/main-layout'
-import { docketItems, currentUser } from '@/lib/data'
+import { docketItems, currentUser, getPendingDecisions } from '@/lib/data'
 import { getGreeting, formatDate } from '@/lib/utils'
+import { DecisionsSection } from '@/components/today/decisions-section'
 
 // Get the lead story (most urgent item)
 function getLeadStory() {
@@ -24,6 +25,7 @@ function getOtherStories() {
 export default function TodayPage() {
   const leadStory = getLeadStory()
   const otherStories = getOtherStories()
+  const pendingDecisions = getPendingDecisions()
   const today = new Date()
 
   return (
@@ -42,6 +44,9 @@ export default function TodayPage() {
               {formatDate(today)} · {docketItems.length} items on your plate
             </p>
           </div>
+
+          {/* Decisions Section */}
+          <DecisionsSection decisions={pendingDecisions} />
 
           {/* Lead Story */}
           <Link

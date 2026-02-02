@@ -8,6 +8,8 @@ import {
   CalendarEvent,
   CreativeConcept,
   MetricData,
+  Decision,
+  WorkflowTemplate,
 } from './types'
 
 // Current User
@@ -198,6 +200,16 @@ export const agents: Agent[] = [
     capabilities: ['Positioning', 'Messaging frameworks', 'Value proposition'],
     usedInWorkflows: 15,
   },
+  {
+    id: 'scenario-agent',
+    name: 'Scenario Agent',
+    shortName: 'Scenario',
+    description: 'Models timelines, budget scenarios, and trade-offs for strategic decisions.',
+    longDescription: 'I help you think through what-if scenarios by modeling different timelines, budget allocations, and strategic trade-offs. I can show you the implications of various choices before you commit.',
+    category: 'strategy',
+    capabilities: ['Timeline modeling', 'Budget scenarios', 'Trade-off analysis', 'Risk assessment'],
+    usedInWorkflows: 8,
+  },
   // Creative Agents
   {
     id: 'concept-generator',
@@ -371,6 +383,16 @@ export const agents: Agent[] = [
     category: 'operations',
     capabilities: ['Presentation creation', 'Deck design', 'Storytelling'],
     usedInWorkflows: 20,
+  },
+  {
+    id: 'compliance-agent',
+    name: 'Compliance Agent',
+    shortName: 'Compliance',
+    description: 'Reviews content for brand guidelines, legal requirements, and claim verification.',
+    longDescription: 'I ensure all content meets brand guidelines, legal requirements, and regulatory standards. I verify claims, check disclaimers, and flag potential compliance issues before they become problems.',
+    category: 'operations',
+    capabilities: ['Brand guideline review', 'Legal compliance', 'Claim verification', 'Disclaimer checks'],
+    usedInWorkflows: 14,
   },
   // Custom Agent
   {
@@ -750,6 +772,226 @@ export const activityItems = [
   { timestamp: 'Feb 1, 3:00pm', description: 'Brief Writer Agent finalized Creative Brief v2', projectId: 'march-madness' },
 ]
 
+// Decisions
+export const decisions: Decision[] = [
+  {
+    id: 'decision-1',
+    workflowId: 'creative-dev',
+    stepId: 'kenny-review',
+    title: 'Approve March Madness Creative Direction',
+    context: 'The Concept Generator Agent has prepared 4 creative concepts. Review and select a direction to proceed with asset production.',
+    priority: 'urgent',
+    clientName: 'Google',
+    workflowName: 'Creative Development',
+    timeEstimate: '~40 min',
+    deadline: 'Today',
+    agentWaiting: 'Concept Generator Agent',
+    status: 'pending',
+  },
+  {
+    id: 'decision-2',
+    workflowId: 'campaign-review',
+    stepId: 'kenny-review',
+    title: 'Review Holiday Campaign Analysis',
+    context: 'The Analytics Agent has compiled the final performance report. Review the data and insights before the client presentation.',
+    priority: 'waiting',
+    clientName: 'Google',
+    workflowName: 'Campaign Review Workflow',
+    timeEstimate: '~25 min',
+    agentWaiting: 'Analytics Agent',
+    status: 'pending',
+  },
+]
+
+// Workflow Templates
+export const workflowTemplates: WorkflowTemplate[] = [
+  // Campaign Templates
+  {
+    id: 'template-creative-dev',
+    name: 'Creative Development',
+    description: 'End-to-end creative process from brief to final production assets.',
+    category: 'campaign',
+    estimatedDuration: '2-3 weeks',
+    stepCount: 6,
+    decisionPoints: 2,
+    steps: [
+      { name: 'Brief Creation', type: 'agent', agentIds: ['brief-writer'] },
+      { name: 'Concept Ideation', type: 'agent', agentIds: ['concept-generator', 'trend-spotter'] },
+      { name: 'Visual Development', type: 'agent', agentIds: ['visual-director', 'concept-generator'] },
+      { name: 'Internal Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Client Review', type: 'human', assigneeRole: 'Client' },
+      { name: 'Final Production', type: 'agent', agentIds: ['asset-reviewer', 'qa-agent'] },
+    ],
+    recommendedAgents: ['brief-writer', 'concept-generator', 'visual-director', 'asset-reviewer'],
+  },
+  {
+    id: 'template-media-planning',
+    name: 'Media Planning',
+    description: 'Research-driven media strategy and channel allocation.',
+    category: 'campaign',
+    estimatedDuration: '1-2 weeks',
+    stepCount: 4,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Audience & Market Research', type: 'agent', agentIds: ['audience-insights', 'competitive-intel'] },
+      { name: 'Plan Draft', type: 'agent', agentIds: ['media-planner', 'budget-optimizer'] },
+      { name: 'Internal Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Finalize & Present', type: 'agent', agentIds: ['presentation'] },
+    ],
+    recommendedAgents: ['audience-insights', 'media-planner', 'budget-optimizer'],
+  },
+  {
+    id: 'template-campaign-review',
+    name: 'Campaign Review',
+    description: 'Post-campaign analysis and client reporting workflow.',
+    category: 'campaign',
+    estimatedDuration: '1 week',
+    stepCount: 5,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Data Collection', type: 'agent', agentIds: ['analytics'] },
+      { name: 'Analysis & Dashboard', type: 'agent', agentIds: ['analytics', 'dashboard', 'insights'] },
+      { name: 'Internal Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Client Presentation Prep', type: 'agent', agentIds: ['meeting-prepper', 'presentation'] },
+      { name: 'Archive & Learnings', type: 'agent', agentIds: ['qa-agent', 'knowledge'] },
+    ],
+    recommendedAgents: ['analytics', 'dashboard', 'insights', 'presentation'],
+  },
+  {
+    id: 'template-asset-production',
+    name: 'Asset Production',
+    description: 'Efficient production of campaign assets at scale.',
+    category: 'campaign',
+    estimatedDuration: '1-2 weeks',
+    stepCount: 3,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Production Setup', type: 'agent', agentIds: ['resource-allocator'] },
+      { name: 'Asset Creation', type: 'agent', agentIds: ['visual-director', 'copywriter'] },
+      { name: 'Review & QA', type: 'human', assigneeRole: 'Creative Director' },
+    ],
+    recommendedAgents: ['resource-allocator', 'visual-director', 'copywriter', 'qa-agent'],
+  },
+  {
+    id: 'template-launch-activation',
+    name: 'Launch & Activation',
+    description: 'Campaign launch coordination and go-live checklist.',
+    category: 'campaign',
+    estimatedDuration: '3-5 days',
+    stepCount: 4,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Pre-launch QA', type: 'agent', agentIds: ['qa-agent', 'compliance-agent'] },
+      { name: 'Final Approval', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Launch Execution', type: 'agent', agentIds: ['timeline-manager'] },
+      { name: 'Day 1 Monitoring', type: 'agent', agentIds: ['analytics'] },
+    ],
+    recommendedAgents: ['qa-agent', 'compliance-agent', 'timeline-manager', 'analytics'],
+  },
+  // Content Templates
+  {
+    id: 'template-blog-production',
+    name: 'Blog Post Production',
+    description: 'End-to-end blog content creation and publishing.',
+    category: 'content',
+    estimatedDuration: '3-5 days',
+    stepCount: 4,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Topic Research', type: 'agent', agentIds: ['trend-spotter', 'competitive-intel'] },
+      { name: 'Content Draft', type: 'agent', agentIds: ['copywriter'] },
+      { name: 'Review & Edit', type: 'human', assigneeRole: 'Content Lead' },
+      { name: 'Final QA & Publish', type: 'agent', agentIds: ['qa-agent'] },
+    ],
+    recommendedAgents: ['trend-spotter', 'copywriter', 'qa-agent'],
+  },
+  {
+    id: 'template-social-calendar',
+    name: 'Social Content Calendar',
+    description: 'Monthly social media content planning and creation.',
+    category: 'content',
+    estimatedDuration: '1 week',
+    stepCount: 5,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Trend Analysis', type: 'agent', agentIds: ['trend-spotter'] },
+      { name: 'Content Ideation', type: 'agent', agentIds: ['concept-generator', 'copywriter'] },
+      { name: 'Calendar Draft', type: 'agent', agentIds: ['timeline-manager'] },
+      { name: 'Approval', type: 'human', assigneeRole: 'Content Lead' },
+      { name: 'Asset Production', type: 'agent', agentIds: ['visual-director', 'copywriter'] },
+    ],
+    recommendedAgents: ['trend-spotter', 'concept-generator', 'copywriter', 'visual-director'],
+  },
+  // Analysis Templates
+  {
+    id: 'template-performance-review',
+    name: 'Performance Review',
+    description: 'Comprehensive performance analysis with actionable insights.',
+    category: 'analysis',
+    estimatedDuration: '3-5 days',
+    stepCount: 4,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Data Pull', type: 'agent', agentIds: ['analytics'] },
+      { name: 'Analysis', type: 'agent', agentIds: ['insights', 'attribution'] },
+      { name: 'Insights Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Report Generation', type: 'agent', agentIds: ['dashboard', 'presentation'] },
+    ],
+    recommendedAgents: ['analytics', 'insights', 'attribution', 'dashboard'],
+  },
+  {
+    id: 'template-competitive-analysis',
+    name: 'Competitive Analysis',
+    description: 'Deep-dive into competitor strategies and market positioning.',
+    category: 'analysis',
+    estimatedDuration: '1 week',
+    stepCount: 4,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Competitor Monitoring', type: 'agent', agentIds: ['competitive-intel'] },
+      { name: 'Market Analysis', type: 'agent', agentIds: ['trend-spotter', 'audience-insights'] },
+      { name: 'Strategic Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Recommendations', type: 'agent', agentIds: ['messaging-strategist', 'scenario-agent'] },
+    ],
+    recommendedAgents: ['competitive-intel', 'trend-spotter', 'audience-insights', 'scenario-agent'],
+  },
+  // Operations Templates
+  {
+    id: 'template-client-onboarding',
+    name: 'Client Onboarding',
+    description: 'Structured onboarding process for new client relationships.',
+    category: 'operations',
+    estimatedDuration: '2 weeks',
+    stepCount: 5,
+    decisionPoints: 2,
+    steps: [
+      { name: 'Discovery & Research', type: 'agent', agentIds: ['audience-insights', 'competitive-intel'] },
+      { name: 'Kickoff Prep', type: 'agent', agentIds: ['meeting-prepper'] },
+      { name: 'Kickoff Meeting', type: 'human', assigneeRole: 'Account Lead' },
+      { name: 'Strategy Development', type: 'agent', agentIds: ['messaging-strategist', 'brief-writer'] },
+      { name: 'Onboarding Complete', type: 'human', assigneeRole: 'Account Lead' },
+    ],
+    recommendedAgents: ['audience-insights', 'competitive-intel', 'meeting-prepper', 'messaging-strategist'],
+  },
+  {
+    id: 'template-qbr',
+    name: 'Quarterly Business Review',
+    description: 'Comprehensive quarterly review and planning session.',
+    category: 'operations',
+    estimatedDuration: '1 week',
+    stepCount: 5,
+    decisionPoints: 1,
+    steps: [
+      { name: 'Performance Summary', type: 'agent', agentIds: ['analytics', 'insights'] },
+      { name: 'Learnings Synthesis', type: 'agent', agentIds: ['knowledge'] },
+      { name: 'Next Quarter Planning', type: 'agent', agentIds: ['scenario-agent', 'timeline-manager'] },
+      { name: 'Leadership Review', type: 'human', assigneeRole: 'Strategy Lead' },
+      { name: 'Client Presentation', type: 'agent', agentIds: ['presentation', 'meeting-prepper'] },
+    ],
+    recommendedAgents: ['analytics', 'insights', 'knowledge', 'scenario-agent', 'presentation'],
+  },
+]
+
 // Helper functions to get data
 export function getClient(id: string) {
   return clients.find(c => c.id === id)
@@ -786,4 +1028,21 @@ export function getDocketItem(id: string) {
 
 export function getCalendarEventsByDate(date: string) {
   return calendarEvents.filter(e => e.date === date)
+}
+
+export function getDecision(id: string) {
+  return decisions.find(d => d.id === id)
+}
+
+export function getPendingDecisions() {
+  return decisions.filter(d => d.status === 'pending')
+}
+
+export function getWorkflowTemplate(id: string) {
+  return workflowTemplates.find(t => t.id === id)
+}
+
+export function getWorkflowTemplatesByCategory(category: string) {
+  if (category === 'all') return workflowTemplates
+  return workflowTemplates.filter(t => t.category === category)
 }

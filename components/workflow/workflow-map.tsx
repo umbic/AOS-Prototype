@@ -1,6 +1,7 @@
 'use client'
 
-import { CheckCircle2, Circle, CircleDot, Bot, User, ArrowRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { CheckCircle2, Circle, CircleDot, Bot, User, ArrowRight, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getAgent } from '@/lib/data'
 import type { Workflow, WorkflowStep } from '@/lib/types'
@@ -11,7 +12,28 @@ interface WorkflowMapProps {
   selectedStepId?: string
 }
 
+// Determine if a step is a human decision step
+function isHumanDecisionStep(step: WorkflowStep): boolean {
+  // Human decision if it has an assignee and no agents, or if stepType is set
+  return step.stepType === 'human_decision' || (!!step.assignee && step.agents.length === 0)
+}
+
 export function WorkflowMap({ workflow, onSelectStep, selectedStepId }: WorkflowMapProps) {
+  const router = useRouter()
+
+  const handleStepClick = (step: WorkflowStep) => {
+    const isHumanStep = isHumanDecisionStep(step)
+
+    // If it's a current human decision step, navigate to decision view
+    if (step.status === 'current' && isHumanStep) {
+      router.push(`/workflow/${workflow.id}/step/${step.id}`)
+      return
+    }
+
+    // Otherwise, call the onSelectStep callback to show panel
+    onSelectStep?.(step)
+  }
+
   return (
     <div className="p-8 min-h-full">
       {/* Horizontal flowing layout */}
@@ -19,18 +41,28 @@ export function WorkflowMap({ workflow, onSelectStep, selectedStepId }: Workflow
         {workflow.steps.map((step, index) => {
           const isSelected = step.id === selectedStepId
           const isLast = index === workflow.steps.length - 1
+          const isHumanStep = isHumanDecisionStep(step)
 
           return (
             <div key={step.id} className="flex items-center">
               {/* Node */}
               <button
-                onClick={() => onSelectStep?.(step)}
+                onClick={() => handleStepClick(step)}
                 className={cn(
                   'relative w-64 p-4 rounded-xl border-2 transition-all text-left',
+                  // Completed steps
                   step.status === 'complete'
                     ? 'bg-green-50 border-green-200 hover:border-green-300'
+                    // Current human decision step - amber highlight
+                    : step.status === 'current' && isHumanStep
+                    ? 'bg-amber-50 border-amber-300 ring-4 ring-amber-100'
+                    // Current agent step - blue
                     : step.status === 'current'
                     ? 'bg-blue-50 border-blue-300 ring-4 ring-blue-100'
+                    // Upcoming human step - subtle amber border
+                    : isHumanStep
+                    ? 'bg-white border-amber-200 hover:border-amber-300'
+                    // Upcoming agent step
                     : 'bg-white border-stone-200 hover:border-stone-300',
                   isSelected && 'ring-4 ring-stone-200'
                 )}
@@ -39,8 +71,12 @@ export function WorkflowMap({ workflow, onSelectStep, selectedStepId }: Workflow
                 <div className="flex items-center gap-2 mb-2">
                   {step.status === 'complete' ? (
                     <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  ) : step.status === 'current' && isHumanStep ? (
+                    <Lock className="w-5 h-5 text-amber-500" />
                   ) : step.status === 'current' ? (
                     <CircleDot className="w-5 h-5 text-blue-500" />
+                  ) : isHumanStep ? (
+                    <Lock className="w-5 h-5 text-stone-300" />
                   ) : (
                     <Circle className="w-5 h-5 text-stone-300" />
                   )}
@@ -48,11 +84,13 @@ export function WorkflowMap({ workflow, onSelectStep, selectedStepId }: Workflow
                     'text-xs font-medium uppercase tracking-wider',
                     step.status === 'complete'
                       ? 'text-green-600'
+                      : step.status === 'current' && isHumanStep
+                      ? 'text-amber-600'
                       : step.status === 'current'
                       ? 'text-blue-600'
                       : 'text-stone-400'
                   )}>
-                    {step.status === 'complete' ? 'Complete' : step.status === 'current' ? 'Current' : 'Upcoming'}
+                    {step.status === 'complete' ? 'Complete' : step.status === 'current' && isHumanStep ? 'Decision' : step.status === 'current' ? 'Current' : 'Upcoming'}
                   </span>
                 </div>
 

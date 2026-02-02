@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, X } from 'lucide-react'
 import { MainLayout } from '@/components/layout/main-layout'
 import { WorkflowMap } from '@/components/workflow/workflow-map'
 import { StepDetailPanel } from '@/components/workflow/step-detail-panel'
+import { StepSummaryPanel } from '@/components/workflow/step-summary-panel'
+import { StepPreviewPanel } from '@/components/workflow/step-preview-panel'
 import { getWorkflow, getProject, getClient } from '@/lib/data'
 import type { WorkflowStep } from '@/lib/types'
 
@@ -81,13 +83,45 @@ export default function WorkflowPage() {
           </div>
         </header>
 
-        {/* Workflow Map */}
-        <div className="flex-1 overflow-auto bg-stone-50">
-          <WorkflowMap
-            workflow={workflow}
-            onSelectStep={setSelectedStep}
-            selectedStepId={activeStep?.id}
-          />
+        {/* Main content area with workflow map and panel */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Workflow Map */}
+          <div className="flex-1 overflow-auto bg-stone-50">
+            <WorkflowMap
+              workflow={workflow}
+              onSelectStep={setSelectedStep}
+              selectedStepId={selectedStep?.id}
+            />
+          </div>
+
+          {/* Right panel - shows based on selected step status */}
+          {selectedStep && (
+            <div className="w-80 border-l border-stone-200 flex-shrink-0 overflow-hidden flex flex-col">
+              {/* Panel header with close button */}
+              <div className="flex items-center justify-between px-4 py-2 border-b border-stone-100 bg-stone-50">
+                <span className="text-xs font-medium text-stone-500 uppercase tracking-wider">
+                  Step Details
+                </span>
+                <button
+                  onClick={() => setSelectedStep(null)}
+                  className="p-1 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Panel content based on status */}
+              <div className="flex-1 overflow-auto">
+                {selectedStep.status === 'complete' ? (
+                  <StepSummaryPanel step={selectedStep} />
+                ) : selectedStep.status === 'upcoming' ? (
+                  <StepPreviewPanel step={selectedStep} />
+                ) : (
+                  <StepDetailPanel step={selectedStep} />
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </MainLayout>
