@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { MainLayout } from '@/components/layout/main-layout'
-import { docketItems, currentUser, getPendingDecisions } from '@/lib/data'
+import { docketItems, currentUser } from '@/lib/data'
 import { getGreeting, formatDate } from '@/lib/utils'
-import { DecisionsSection } from '@/components/today/decisions-section'
+import { cn } from '@/lib/utils'
 
 // Get the lead story (most urgent item)
 function getLeadStory() {
@@ -22,10 +22,23 @@ function getOtherStories() {
   return docketItems.filter(item => item.id !== lead.id)
 }
 
+// Get priority dot color
+function getPriorityDotColor(priority: string): string {
+  switch (priority) {
+    case 'urgent':
+      return 'bg-red-500' // Decision needed
+    case 'attention':
+      return 'bg-amber-400' // Needs attention
+    case 'discovery':
+      return 'bg-[#86BC24]' // Ready to review
+    default:
+      return 'bg-neutral-300'
+  }
+}
+
 export default function TodayPage() {
   const leadStory = getLeadStory()
   const otherStories = getOtherStories()
-  const pendingDecisions = getPendingDecisions()
   const today = new Date()
 
   return (
@@ -45,12 +58,12 @@ export default function TodayPage() {
               {getGreeting()}, {currentUser.firstName}
             </h1>
             <p className="text-sm text-neutral-500 mt-2">
-              {formatDate(today)} · {docketItems.length} items on your plate
+              {formatDate(today)}
+            </p>
+            <p className="text-sm text-neutral-600 mt-1">
+              🏀 Don't forget — Sixers play at 10pm EST tonight
             </p>
           </div>
-
-          {/* Decisions Section */}
-          <DecisionsSection decisions={pendingDecisions} />
 
           {/* Lead Story */}
           <Link
@@ -68,6 +81,11 @@ export default function TodayPage() {
             </p>
           </Link>
 
+          {/* Click hint */}
+          <p className="text-xs text-neutral-400 mb-4">
+            👆 Click any task to dive in
+          </p>
+
           {/* Column Items */}
           <div className="grid grid-cols-4 gap-6">
             {otherStories.map((item) => (
@@ -76,6 +94,16 @@ export default function TodayPage() {
                 href={`/today/${item.id}`}
                 className="block pt-4 border-t border-neutral-200 group cursor-pointer hover:-translate-y-0.5 transition-all duration-150"
               >
+                {/* Priority dot */}
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={cn(
+                    'w-2 h-2 rounded-full',
+                    getPriorityDotColor(item.priority)
+                  )} />
+                  <span className="text-[10px] uppercase tracking-wide text-neutral-400">
+                    {item.priority === 'urgent' ? 'Decision' : item.priority === 'attention' ? 'Attention' : 'Ready'}
+                  </span>
+                </div>
                 <h3 className="text-sm font-medium text-black mb-1.5 group-hover:text-[#86BC24] transition-colors duration-150">
                   {getColumnTitle(item)}
                 </h3>

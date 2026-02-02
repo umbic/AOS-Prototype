@@ -417,7 +417,7 @@ export const docketItems: DocketItem[] = [
     subtitle: 'The Analytics Agent pulled the final numbers. Some surprises.',
     projectId: 'holiday-campaign',
     projectName: 'Holiday Campaign',
-    priority: 'urgent',
+    priority: 'discovery',
     timeEstimate: '~25 min',
     agents: [
       agents.find(a => a.id === 'analytics')!,
@@ -459,7 +459,7 @@ export const docketItems: DocketItem[] = [
     subtitle: '4 concepts from the Concept Generator. Waiting on your take.',
     projectId: 'march-madness',
     projectName: 'March Madness Campaign',
-    priority: 'attention',
+    priority: 'urgent',
     timeEstimate: '~40 min',
     agents: [
       agents.find(a => a.id === 'concept-generator')!,
@@ -502,7 +502,7 @@ export const docketItems: DocketItem[] = [
     subtitle: 'The Audience Insights Agent found something interesting in the data.',
     projectId: 'q2-refresh',
     projectName: 'Q2 Brand Refresh',
-    priority: 'discovery',
+    priority: 'attention',
     timeEstimate: '~15 min',
     agents: [agents.find(a => a.id === 'audience-insights')!],
     type: 'discovery',
