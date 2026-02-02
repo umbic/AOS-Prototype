@@ -49,33 +49,46 @@ export function TaskContextSidebar({
         {client && <p className="text-sm text-neutral-500">{client.name}</p>}
       </div>
 
-      {/* Workflow progress */}
+      {/* Workflow progress - horizontal */}
       {workflow && (
         <div className="px-5 py-4 border-b border-neutral-100">
           <p className="text-xs text-neutral-400 mb-3">Workflow</p>
-          <div className="space-y-2">
-            {workflowSteps.map((step) => (
-              <div key={step.id} className="flex items-center gap-2 text-sm">
-                {step.status === 'complete' ? (
-                  <div className="w-4 h-4 rounded-full bg-[#86BC24] flex items-center justify-center">
-                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-                  </div>
-                ) : step.status === 'current' ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-[#86BC24] flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 bg-[#86BC24] rounded-full" />
-                  </div>
-                ) : (
-                  <div className="w-4 h-4 rounded-full border-2 border-neutral-200" />
-                )}
-                <span
-                  className={cn(
-                    step.status === 'complete' && 'text-neutral-400 line-through',
-                    step.status === 'current' && 'text-black font-medium',
-                    step.status === 'upcoming' && 'text-neutral-400'
+          <div className="flex flex-wrap gap-1">
+            {workflowSteps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                {/* Step indicator */}
+                <div className="flex flex-col items-center">
+                  {step.status === 'complete' ? (
+                    <div className="w-6 h-6 rounded-full bg-[#86BC24] flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                    </div>
+                  ) : step.status === 'current' ? (
+                    <div className="w-6 h-6 rounded-full border-2 border-[#86BC24] bg-[#86BC24]/10 flex items-center justify-center">
+                      <span className="w-2 h-2 bg-[#86BC24] rounded-full" />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full border-2 border-neutral-200 bg-white" />
                   )}
-                >
-                  {step.name}
-                </span>
+                  <span
+                    className={cn(
+                      'text-[10px] mt-1 text-center max-w-[50px] leading-tight',
+                      step.status === 'complete' && 'text-neutral-400',
+                      step.status === 'current' && 'text-black font-medium',
+                      step.status === 'upcoming' && 'text-neutral-400'
+                    )}
+                  >
+                    {step.name}
+                  </span>
+                </div>
+                {/* Connector line */}
+                {index < workflowSteps.length - 1 && (
+                  <div
+                    className={cn(
+                      'w-4 h-0.5 mx-1 mt-[-12px]',
+                      step.status === 'complete' ? 'bg-[#86BC24]' : 'bg-neutral-200'
+                    )}
+                  />
+                )}
               </div>
             ))}
           </div>

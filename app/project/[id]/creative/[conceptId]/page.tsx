@@ -477,32 +477,53 @@ export default function CreativeCanvasPage() {
                 </div>
               </div>
 
-              {/* Approval Status */}
+              {/* Approval Status - Horizontal */}
               <div className="px-5 py-4 border-b border-neutral-100">
                 <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-3">Approval Status</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded border-2 border-[#86BC24] flex items-center justify-center">
-                      <span className="w-1.5 h-1.5 bg-[#86BC24] rounded-full" />
+                <div className="flex flex-wrap gap-1">
+                  {[
+                    { name: 'Kenny', status: 'current' },
+                    { name: 'Sarah', status: 'pending' },
+                    { name: 'Lin', status: 'pending' },
+                    { name: 'Legal', status: 'skipped' },
+                  ].map((reviewer, index, arr) => (
+                    <div key={reviewer.name} className="flex items-center">
+                      <div className="flex flex-col items-center">
+                        {reviewer.status === 'complete' ? (
+                          <div className="w-6 h-6 rounded-full bg-[#86BC24] flex items-center justify-center">
+                            <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                          </div>
+                        ) : reviewer.status === 'current' ? (
+                          <div className="w-6 h-6 rounded-full border-2 border-[#86BC24] bg-[#86BC24]/10 flex items-center justify-center">
+                            <span className="w-2 h-2 bg-[#86BC24] rounded-full" />
+                          </div>
+                        ) : reviewer.status === 'skipped' ? (
+                          <div className="w-6 h-6 rounded-full border-2 border-neutral-200 bg-neutral-50 flex items-center justify-center">
+                            <span className="text-[10px] text-neutral-400">—</span>
+                          </div>
+                        ) : (
+                          <div className="w-6 h-6 rounded-full border-2 border-neutral-200 bg-white" />
+                        )}
+                        <span
+                          className={cn(
+                            'text-[10px] mt-1 text-center leading-tight',
+                            reviewer.status === 'current' && 'text-black font-medium',
+                            reviewer.status === 'complete' && 'text-[#86BC24]',
+                            reviewer.status === 'pending' && 'text-neutral-400',
+                            reviewer.status === 'skipped' && 'text-neutral-300'
+                          )}
+                        >
+                          {reviewer.name}
+                        </span>
+                      </div>
+                      {index < arr.length - 1 && (
+                        <div className={cn(
+                          'w-4 h-0.5 mx-1 mt-[-12px]',
+                          reviewer.status === 'complete' ? 'bg-[#86BC24]' : 'bg-neutral-200'
+                        )} />
+                      )}
                     </div>
-                    <span className="text-sm text-black font-medium">Kenny Review</span>
-                    <span className="text-xs text-[#86BC24] ml-auto">CURRENT</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded border-2 border-neutral-200" />
-                    <span className="text-sm text-neutral-500">Sarah Review</span>
-                    <span className="text-xs text-neutral-400 ml-auto">Pending</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded border-2 border-neutral-200" />
-                    <span className="text-sm text-neutral-500">Client Review (Lin)</span>
-                    <span className="text-xs text-neutral-400 ml-auto">Pending</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded border-2 border-neutral-200 bg-neutral-50" />
-                    <span className="text-sm text-neutral-400">Legal Review</span>
-                    <span className="text-xs text-neutral-400 ml-auto">Not required</span>
-                  </div>
+                  ))}
                 </div>
               </div>
 
