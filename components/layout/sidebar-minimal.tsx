@@ -24,10 +24,10 @@ function NavItem({ href, icon, label, isActive }: NavItemProps) {
     <Link
       href={href}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 text-sm transition-all duration-200',
+        'flex items-center gap-3 px-4 py-2.5 text-sm transition-all duration-200 rounded-lg mx-2',
         isActive
-          ? 'bg-deloitte-green text-white font-medium'
-          : 'text-neutral-500 hover:bg-neutral-50 hover:text-black'
+          ? 'bg-neutral-100 text-black font-medium'
+          : 'text-neutral-400 hover:text-black hover:bg-neutral-50'
       )}
     >
       <span className="w-5 h-5 flex items-center justify-center">{icon}</span>
@@ -40,17 +40,17 @@ export function SidebarMinimal() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-56 h-screen bg-white border-r border-neutral-100 flex flex-col">
+    <aside className="w-52 h-screen bg-white border-r border-neutral-100 flex flex-col">
       {/* Logo */}
-      <div className="px-5 py-6">
+      <div className="px-6 py-6">
         <Link href="/today" className="flex items-center">
-          <span className="text-lg font-semibold text-black tracking-tight">AgencyOS</span>
+          <span className="text-base font-semibold text-black tracking-tight">AgencyOS</span>
           <span className="w-1.5 h-1.5 ml-1 bg-deloitte-green rounded-full"></span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-2">
+      <nav className="flex-1 py-2 space-y-1">
         <NavItem
           href="/today"
           icon={<Home className="w-4 h-4" />}
@@ -84,7 +84,7 @@ export function SidebarMinimal() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="border-t border-neutral-100">
+      <div className="border-t border-neutral-100 py-2">
         <NavItem
           href="/settings"
           icon={<Settings className="w-4 h-4" />}
@@ -92,9 +92,9 @@ export function SidebarMinimal() {
           isActive={pathname === '/settings'}
         />
 
-        {/* User Profile */}
-        <div className="flex items-center gap-3 px-4 py-4">
-          <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white text-sm font-medium">
+        {/* User Profile - simplified */}
+        <div className="flex items-center gap-3 px-6 py-4 mt-2">
+          <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-xs font-medium">
             K
           </div>
           <div className="flex-1 min-w-0">

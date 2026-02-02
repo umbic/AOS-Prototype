@@ -8,9 +8,10 @@ import { ChatPanelSlide } from '../chat/chat-panel-slide'
 interface MainLayoutCenteredProps {
   children: ReactNode
   pageContext?: string
+  hideChatButton?: boolean
 }
 
-export function MainLayoutCentered({ children, pageContext }: MainLayoutCenteredProps) {
+export function MainLayoutCentered({ children, pageContext, hideChatButton }: MainLayoutCenteredProps) {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const pathname = usePathname()
 
@@ -29,13 +30,15 @@ export function MainLayoutCentered({ children, pageContext }: MainLayoutCentered
       </main>
 
       {/* Floating chat button */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-deloitte-green rounded-full shadow-elevated flex items-center justify-center hover:bg-deloitte-green-dark transition-colors z-30 group"
-        aria-label="Open chat"
-      >
-        <span className="w-3 h-3 bg-white rounded-full group-hover:scale-110 transition-transform"></span>
-      </button>
+      {!hideChatButton && (
+        <button
+          onClick={() => setIsChatOpen(true)}
+          className="fixed bottom-6 right-6 w-12 h-12 bg-deloitte-green rounded-full shadow-elevated flex items-center justify-center hover:bg-deloitte-green-dark transition-colors z-30 group"
+          aria-label="Open chat"
+        >
+          <span className="w-3 h-3 bg-white rounded-full group-hover:scale-110 transition-transform"></span>
+        </button>
+      )}
 
       {/* Chat panel */}
       <ChatPanelSlide
