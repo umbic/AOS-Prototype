@@ -7,6 +7,22 @@ AgencyOS is an agency workflow management platform prototype built with Next.js 
 **Live URL:** https://aos-prototype.vercel.app
 **GitHub:** https://github.com/umbic/AOS-Prototype
 
+## Design Philosophy
+
+**This isn't a dashboard you check. It's a workspace you inhabit.**
+
+The system knows you, knows your clients, knows your projects, and meets you where you are. It's less "here's your data" and more "here's what we should do together today."
+
+**Mental model:** A really good co-worker who already did the prep work and is ready to brief you, and work with you.
+
+### Key Principles
+- Conversational, not data-dump
+- AI briefs you proactively with recommendations
+- Centered layouts with generous whitespace
+- Elegant minimal cards (icon + title + one line)
+- Green dot chat always available, context-aware
+- Horizontal layouts that use screen real estate
+
 ## Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
@@ -28,22 +44,14 @@ This prototype follows **Deloitte Digital** brand guidelines:
 | White | `#FFFFFF` |
 | Neutral Scale | `#FAFAFA` to `#0A0A0A` |
 
-### Design Principles
-- Clean, minimal, lots of white space
-- Typography-forward (system communicates through words)
-- Professional but contemporary
-- Square/rectangular UI elements (minimal border radius)
-- Uppercase tracking for labels and buttons
-- Strong typography hierarchy
-
 ## Project Structure
 
 ```
-/app                    # Next.js App Router pages
-  /today               # Home/Today view
-  /today/[id]          # Expanded card view
+/app
+  /today               # Home - greeting + elegant task cards (grid layout)
+  /today/[id]          # Task detail - conversational AI briefing
+  /project/[id]        # Project view - status + attention items + progress
   /workflow/[id]       # Workflow detail view
-  /project/[id]        # Project detail view
   /client/[id]         # Client detail view
   /agents              # Agent store
   /calendar            # Calendar view
@@ -52,37 +60,51 @@ This prototype follows **Deloitte Digital** brand guidelines:
   /settings            # Settings
 
 /components
-  /layout              # Sidebar, MainLayout
-  /cards               # DocketCard, ProjectCard, AgentCard, etc.
-  /canvas              # DataCanvas, CreativeCanvas
-  /chat                # ChatPanel
-  /workflow            # WorkflowMap, StepDetailPanel
+  /layout
+    sidebar-minimal.tsx      # Simplified sidebar (top-level nav only)
+    main-layout-centered.tsx # Centered layout with chat button
+  /cards
+    elegant-card.tsx         # Minimal card (icon + title + subtitle)
+  /chat
+    chat-panel-slide.tsx     # Slide-out chat panel (context-aware)
 
 /lib
-  /data.ts             # All mock data (users, clients, projects, agents, etc.)
+  /data.ts             # All mock data
   /types.ts            # TypeScript interfaces
-  /utils.ts            # Utility functions (cn, formatDate, etc.)
+  /utils.ts            # Utility functions
 ```
 
 ## Key Components
 
 ### Layout
-- `Sidebar` - Left navigation with collapsible project tree
-- `MainLayout` - Main layout wrapper with optional right rail
+- `SidebarMinimal` - Simplified left nav (Today, Workflows, Calendar, Agents, Team, Settings)
+- `MainLayoutCentered` - Centered content area with floating green chat button
 
 ### Cards
-- `DocketCard` - Task items on Today view
-- `ProjectCard` - Project display (default/compact variants)
-- `AgentCard` - Agent display (grid/inline/detail variants)
-- `WorkflowCard` - Workflow with progress indicator
-- `SuggestionCard` - Time-aware suggestion (dark style)
-
-### Canvas
-- `DataCanvas` - Metrics visualization with insights
-- `CreativeCanvas` - Creative concept review with compare mode
+- `ElegantCard` - Minimal task card with colored icon, title, and one-line subtitle
+  - Types: review (blue), creative (amber), discovery (purple), calendar (green), operational (red)
 
 ### Chat
-- `ChatPanel` - Agent conversation with simulated responses
+- `ChatPanelSlide` - Slide-out panel from right, shows current page context, quick suggestions
+
+## Page Patterns
+
+### Today Page
+- Greeting (left-aligned)
+- 90-min suggestion (subtle button, expands on click)
+- Task cards in 3-column grid
+
+### Project Page
+- Back link + title with status on right
+- "Needs your attention" cards (2-column grid)
+- Progress + Documents side by side
+
+### Task Detail Page
+- Minimal header with back link
+- AI briefing message (already prepped, gives recommendations)
+- Quick action buttons
+- Chat input at bottom
+- Full conversational experience
 
 ## Mock Data
 
@@ -91,7 +113,7 @@ All sample data is in `/lib/data.ts`:
 - **Client:** Google (with 3 contacts)
 - **Projects:** March Madness Campaign, Holiday Campaign, Q2 Brand Refresh
 - **Agents:** 20+ agents across Strategy, Creative, Media, Operations, Custom
-- **Docket Items:** 5 sample tasks
+- **Docket Items:** 5 sample tasks with contextual AI briefings
 - **Workflows:** 4 sample workflows with steps
 
 ## Commands
@@ -105,50 +127,61 @@ npm run lint     # Run ESLint
 
 ## Deployment
 
-The project auto-deploys to Vercel on push to `main`. Manual deploy:
-
-```bash
-vercel --prod --yes
-```
+Auto-deploys to Vercel on push to `main`.
 
 ## When Making Changes
 
-1. **Styling:** Use Tailwind classes. Reference `tailwind.config.ts` for custom values.
-2. **Colors:** Always use the Deloitte palette (`deloitte-green`, `neutral-*`, `black`).
-3. **Typography:** Use defined font sizes (`text-display-1`, `text-heading-1`, `text-body`, etc.).
-4. **Buttons:** Use `btn-primary`, `btn-secondary`, or `btn-outline` classes.
-5. **Cards:** Maintain square edges, use `border border-neutral-200` pattern.
-6. **Icons:** Import from `lucide-react`.
+1. **Philosophy first:** Is this conversational or dashboard-y? Choose conversational.
+2. **Layouts:** Use horizontal space, grid layouts, avoid narrow centered columns
+3. **Colors:** Deloitte palette (`deloitte-green`, `neutral-*`, `black`)
+4. **Cards:** Use `ElegantCard` pattern (icon + title + one line)
+5. **Chat:** Green dot always available, context-aware
+6. **AI voice:** Proactive, gives recommendations, asks what to focus on
 
 ## Common Patterns
 
-### Section Headers
+### Elegant Card
 ```tsx
-<h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-6">
-  Section Title
-</h2>
+<ElegantCard
+  href="/today/task-id"
+  title="Review holiday campaign"
+  subtitle="Holiday Campaign"
+  type="review"
+/>
 ```
 
-### Status Badges
+### Page Header (left-aligned)
 ```tsx
-<span className="inline-flex items-center px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-deloitte-green text-white">
-  Active
-</span>
+<header className="mb-10">
+  <h1 className="text-3xl font-semibold text-black">
+    Good afternoon, Kenny<span className="text-deloitte-green">.</span>
+  </h1>
+  <p className="mt-2 text-neutral-400">5 items need your attention</p>
+</header>
 ```
 
-### Card Hover
+### Grid Layout
 ```tsx
-className="bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-card-hover transition-all duration-200"
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {items.map(item => <ElegantCard ... />)}
+</div>
 ```
 
-### Green Dot Accent
+### AI Briefing Message
 ```tsx
-<span className="w-2 h-2 bg-deloitte-green rounded-full"></span>
+<div className="flex gap-4">
+  <div className="w-8 h-8 rounded-full bg-deloitte-green flex items-center justify-center">
+    <span className="w-2 h-2 bg-white rounded-full" />
+  </div>
+  <p className="text-sm text-neutral-700 leading-relaxed">
+    I pulled the final numbers... Here's what I found:
+  </p>
+</div>
 ```
 
 ## Notes
 
 - This is a **prototype** - functionality is simulated with mock data
-- Agent chat responses are randomly selected from predefined arrays
-- No backend/database - all data is static
+- AI responses are contextual but predefined (no real AI backend)
 - Designed for desktop; mobile responsiveness is limited
+- Green dot chat is always present in bottom-right corner
