@@ -9,119 +9,142 @@ AgencyOS is a high-fidelity prototype for an AI-agent-powered agency workflow ma
 
 ---
 
-## CURRENT STATE (Feb 2, 2026)
+## CURRENT STATE (Feb 2, 2026 - End of Day)
 
-### What Was Implemented
+### Major Features Implemented This Session
 
-The approved newspaper-style design from `design-exploration-v4.html` has been implemented:
+#### 1. Task Detail Page Redesign
+**Route:** `/today/[id]`
 
-1. **New Sidebar** (`/components/layout/sidebar.tsx`)
-   - Logo: "AgencyOS" + green dot
-   - Today nav item with green active state
-   - PROJECTS section with expandable Google client
-   - Nested projects under client
-   - Main nav: Workflows, Calendar, Agent Store, Team
-   - Bottom: Settings, User profile (Kenny)
+Completely redesigned from chat-bubble interface to structured workspace:
+- **Thin icon sidebar** (64px) on left
+- **Structured briefing content** in center:
+  - Summary card with key info
+  - Concept grid (for creative tasks) with "Recommended" badges
+  - Metrics cards (for review tasks)
+  - "My Recommendation" panel with expandable options
+  - Action buttons (View/Confirm)
+- **Context sidebar** on right:
+  - Project info
+  - Horizontal workflow progress
+  - Deadline/days left
+  - Related tasks
+  - Client contact
+- Chat input at bottom for follow-up questions
 
-2. **New Main Layout** (`/components/layout/main-layout.tsx`)
-   - Sidebar + main content flex container
-   - Warm background (#FAF9F7)
-   - Dotti button fixed bottom-right (56px green circle with white dot)
-   - Removed `rightRail` prop (Dotti handles chat now)
+Each task type has specific content (creative concepts, metrics review, audience discovery, timeline risk, call prep).
 
-3. **Newspaper-Style Today Page** (`/app/today/page.tsx`)
-   - Masthead: "Your Daily Brief" label, greeting, date
-   - Lead Story: Timeline risk with red "Needs Attention" tag
-   - 4-column grid for other items
-   - NO chat input (click Dotti to chat)
+#### 2. Creative Canvas Page
+**Route:** `/project/[id]/creative/[conceptId]`
 
-4. **Updated All Pages** to use new MainLayout
-   - Removed rightRail props from agents, calendar, workflow pages
+Full creative concept review workspace:
+- **Toolbar:** Navigate concepts, Zoom, Pan, Annotate, Compare, History, Export
+- **Canvas area:** Hero visual, strategic angle, key message, visual direction, tone, channels, assets
+- **Annotation layer:** Pins with hover tooltips for feedback
+- **Right rail context panel:**
+  - Concept details (status, creator, date, version)
+  - Inputs used (brief, audience, references, guidelines)
+  - Agent assessment (brand compliance, predicted performance, risk flags)
+  - Horizontal approval status (Kenny → Sarah → Lin → Legal)
+  - Actions (Approve, Request Changes, Reject)
+- **Compare mode:** Side-by-side concept comparison with agent recommendation
+- **Chat panel:** Expandable chat with Concept Generator Agent
 
-### Deployed
+#### 3. Sidebar Restructured
+**Component:** `/components/layout/sidebar.tsx`
 
-Changes pushed to git → Vercel auto-deploy triggered.
+- Changed "Projects" section to "Clients"
+- Each client expands to show:
+  - **Projects** subsection (collapsible)
+  - **Workflows** subsection (collapsible)
+- Removed standalone "Workflows" nav item
+- Workflows now nested under their client
+
+#### 4. Horizontal Workflow Displays
+All workflow visualizations are now horizontal:
+- **Task context sidebar:** Steps flow left-to-right with connectors
+- **Workflow detail page:** Cards with arrow connectors, wraps/snakes
+- **Creative Canvas approval:** Horizontal reviewer flow
 
 ---
 
-## NEXT SESSION: Review & Refine
+### New Components Created
 
-### User Will Provide Feedback
+| Component | Purpose |
+|-----------|---------|
+| `components/layout/sidebar-thin.tsx` | 64px icon-only sidebar for task pages |
+| `components/layout/task-context-sidebar.tsx` | Right rail with project/workflow/deadline context |
+| `components/layout/task-layout.tsx` | Layout combining thin sidebar + context rail |
+| `app/project/[id]/creative/[conceptId]/page.tsx` | Creative Canvas concept review |
 
-Test on live site: https://aos-prototype.vercel.app
-
-Likely areas for feedback:
-- Spacing/typography tweaks
-- Sidebar behavior/styling
-- Column item content
-- Dotti interaction
-- Task detail page design
-
-### Files Changed This Session
+### Files Modified
 
 | File | Change |
 |------|--------|
-| `components/layout/sidebar.tsx` | Complete rewrite - project hierarchy |
-| `components/layout/main-layout.tsx` | Added Dotti button, removed rightRail |
-| `app/today/page.tsx` | Complete rewrite - newspaper style |
-| `app/today/[id]/page.tsx` | Updated to use MainLayout |
-| `app/project/[id]/page.tsx` | Updated to use MainLayout |
-| `app/agents/page.tsx` | Removed rightRail prop |
-| `app/calendar/page.tsx` | Removed rightRail prop |
-| `app/workflow/[id]/page.tsx` | Removed rightRail prop |
-
-### Old Components (Can Delete)
-
-These are no longer used:
-- `/components/layout/sidebar-minimal.tsx`
-- `/components/layout/main-layout-centered.tsx`
+| `components/layout/sidebar.tsx` | Clients → Projects + Workflows nested |
+| `components/workflow/workflow-map.tsx` | Vertical → Horizontal with arrows |
+| `app/today/[id]/page.tsx` | Complete redesign to workspace layout |
 
 ---
 
-## Design Reference
+## Navigation Flow
 
-The approved design is: **`/design-exploration-v4.html`**
+```
+Today Page (newspaper brief)
+    ↓ click card
+Task Detail Page (structured briefing)
+    ↓ click concept card
+Creative Canvas (full concept review)
+```
 
-Open in browser to compare against live implementation.
+---
+
+## Design Files
+
+### HTML Explorations (in project root)
+- `task-page-exploration-1.html` — Three-panel workspace
+- `task-page-exploration-2.html` — Briefing document style
+- `task-page-exploration-3.html` — Card-based companion
+- `task-page-exploration-4.html` — **APPROVED** (implemented)
+
+### Reference
+- `design-exploration-v4.html` — Today page design reference
 
 ---
 
 ## Key Design Decisions
 
-1. **"Dotti" is the AI assistant** — The green dot chat button
-2. **No chat on home page** — Home is a briefing, click Dotti to chat
-3. **Newspaper/editorial style** — Masthead, lead story, columns
-4. **Project hierarchy sidebar** — Clients expand to show projects
-5. **Warm background** — #FAF9F7 instead of pure white/gray
+1. **Task pages use thin sidebar** — More room for content, icons only
+2. **Workflows are horizontal** — Flow left-to-right, snake when needed
+3. **Workflows nested under clients** — Not a top-level nav item
+4. **Context sidebar on task pages** — Shows project, workflow, deadline, related tasks
+5. **Creative Canvas is full workspace** — Compare, annotate, approve in one place
+6. **Concept cards link to canvas** — Click any concept to open full review
+
+---
+
+## Next Session Ideas
+
+- [ ] Add actual visual mockups to Creative Canvas (placeholder images)
+- [ ] Implement variant request flow (agent creates new concept)
+- [ ] Add more workflow types with different step counts
+- [ ] Calendar page improvements
+- [ ] Agent Store browsing/filtering
+- [ ] Project overview page with all workflows
 
 ---
 
 ## Technical Notes
 
-### Stack
-- Next.js 14 with App Router
-- TypeScript
-- Tailwind CSS 3.4
-- Lucide React icons
-- Vercel deployment
+### Quick Commands
+```bash
+npx tsc --noEmit    # Fast TypeScript check
+git push            # Triggers Vercel deploy
+```
 
-### Key Files
-| File | Purpose |
-|------|---------|
-| `/lib/data.ts` | All mock data |
-| `/lib/types.ts` | TypeScript interfaces |
-| `/tailwind.config.ts` | Design tokens |
-| `/design-exploration-v4.html` | **Approved design reference** |
-| `/error-log.md` | Session mistakes to avoid |
-
----
-
-## Known Limitations
-
-1. **No Mobile Design** - Desktop only
-2. **Static Data** - No persistence
-3. **Simulated Chat** - Predefined responses
-4. **Prototype** - Many buttons are placeholders
+### Key Data Files
+- `/lib/data.ts` — All mock data including concepts, workflows, agents
+- `/lib/types.ts` — TypeScript interfaces
 
 ---
 

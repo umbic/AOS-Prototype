@@ -18,40 +18,32 @@ The system knows you, knows your clients, knows your projects, and meets you whe
 ### Key Principles
 - **Briefing-first** — Today page reads like a newspaper, not a dashboard
 - **Dotti is the AI** — Green dot in corner is the chat interface (named "Dotti")
-- **Project hierarchy in sidebar** — Clients expand to show their projects
-- **Editorial typography** — Large headlines, clean columns, newspaper feel
+- **Client hierarchy in sidebar** — Clients expand to show Projects and Workflows
+- **Workflows are horizontal** — Flow left-to-right, snake/wrap when needed
+- **Task pages are workspaces** — Structured briefings, not chat bubbles
 - **No chat input on home** — Click Dotti to chat, home is for briefing
 
-## Approved Design Direction (Feb 2026)
+## Current Architecture (Feb 2026)
 
-### Today Page = "Your Daily Brief"
-- **Masthead**: "Your Daily Brief" label, "Good afternoon, Kenny" title, date + item count
-- **Lead Story**: Priority item gets a centered hero treatment with red "Needs Attention" tag
-- **4-Column Grid**: Other items shown in newspaper-style columns below
-- **No chat input** — This is a briefing page, not a chat interface
+### Page Types
 
-### Sidebar = Project Hierarchy
-Structure (top to bottom):
-1. **Logo**: "AgencyOS" + green dot
-2. **Today** (nav item, active when on /today)
-3. **Projects Section**:
-   - Section header: "PROJECTS"
-   - Expandable clients (e.g., "Google" with chevron)
-   - Nested projects under each client
-4. **Main Nav**: Workflows, Calendar, Agent Store, Team
-5. **Bottom**: Settings, User profile (avatar + name + role)
+| Page | Layout | Description |
+|------|--------|-------------|
+| Today | MainLayout (full sidebar) | Newspaper-style daily brief |
+| Task Detail | TaskLayout (thin sidebar + context rail) | Structured AI briefing |
+| Creative Canvas | TaskLayout + custom | Full concept review workspace |
+| Workflow Detail | MainLayout | Horizontal workflow map |
+| Other pages | MainLayout | Standard sidebar layout |
 
-### Dotti (Chat)
-- Green dot button fixed in bottom-right corner
-- Click to open slide-out chat panel
-- Context-aware — knows what page you're on
-- This is where conversation happens, not on the Today page
+### Layout Components
 
-## Reference Design
-
-The approved design is in: `/design-exploration-v4.html`
-
-Open this file in a browser to see the exact layout, spacing, and styling to implement.
+| Component | Width | Use Case |
+|-----------|-------|----------|
+| `Sidebar` | 240px | Full sidebar with client/project/workflow hierarchy |
+| `SidebarThin` | 64px | Icon-only sidebar for task pages |
+| `TaskContextSidebar` | 288px | Right rail with project context |
+| `MainLayout` | — | Sidebar + content + Dotti |
+| `TaskLayout` | — | Thin sidebar + content + context rail + Dotti |
 
 ## Tech Stack
 
@@ -59,12 +51,9 @@ Open this file in a browser to see the exact layout, spacing, and styling to imp
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS 3.4
 - **Icons:** Lucide React
-- **Animations:** Framer Motion
 - **Deployment:** Vercel
 
 ## Brand Guidelines
-
-This prototype follows **Deloitte Digital** brand guidelines:
 
 | Element | Value |
 |---------|-------|
@@ -73,38 +62,41 @@ This prototype follows **Deloitte Digital** brand guidelines:
 | Black | `#000000` |
 | White | `#FFFFFF` |
 | Warm Background | `#FAF9F7` |
-| Neutral Scale | `#FAFAFA` to `#0A0A0A` |
 
 ## Project Structure
 
 ```
 /app
-  /today               # Home - newspaper-style daily brief
-  /today/[id]          # Task detail - conversational AI briefing
-  /project/[id]        # Project view
-  /workflow/[id]       # Workflow detail view
-  /client/[id]         # Client detail view
-  /agents              # Agent store
-  /calendar            # Calendar view
-  /workflows           # All workflows list
-  /team                # Team management
-  /settings            # Settings
+  /today                    # Home - newspaper-style daily brief
+  /today/[id]               # Task detail - structured AI briefing
+  /project/[id]             # Project overview
+  /project/[id]/creative/[conceptId]  # Creative Canvas
+  /workflow/[id]            # Workflow detail (horizontal map)
+  /agents                   # Agent store
+  /calendar                 # Calendar view
+  /team                     # Team management
+  /settings                 # Settings
 
 /components
   /layout
-    sidebar.tsx              # NEW: Project hierarchy sidebar
-    main-layout.tsx          # NEW: Layout with sidebar + Dotti
-  /cards
-    elegant-card.tsx         # Minimal card (icon + title + subtitle)
+    sidebar.tsx             # Full sidebar (clients → projects + workflows)
+    sidebar-thin.tsx        # Icon-only sidebar (64px)
+    main-layout.tsx         # Standard layout with full sidebar
+    task-layout.tsx         # Task page layout with context rail
+    task-context-sidebar.tsx # Right rail for task pages
+  /workflow
+    workflow-map.tsx        # Horizontal workflow visualization
   /chat
-    chat-panel-slide.tsx     # Slide-out chat panel (Dotti)
+    chat-panel-slide.tsx    # Slide-out chat panel (Dotti)
 
 /lib
-  /data.ts             # All mock data
-  /types.ts            # TypeScript interfaces
-  /utils.ts            # Utility functions
+  data.ts                   # All mock data
+  types.ts                  # TypeScript interfaces
+  utils.ts                  # Utility functions
 
-/design-exploration-v4.html  # Reference design (open in browser)
+# Design references (HTML)
+/design-exploration-v4.html      # Today page reference
+/task-page-exploration-4.html    # Task detail reference (approved)
 ```
 
 ## Mock Data
@@ -112,50 +104,62 @@ This prototype follows **Deloitte Digital** brand guidelines:
 All sample data is in `/lib/data.ts`:
 - **User:** Kenny (Strategy Lead)
 - **Client:** Google (with 3 contacts)
-- **Projects:** March Madness Campaign, Holiday Campaign, Q2 Brand Refresh
-- **Agents:** 20+ agents across Strategy, Creative, Media, Operations, Custom
-- **Docket Items:** 5 sample tasks with contextual AI briefings
-- **Workflows:** 4 sample workflows with steps
+- **Projects:** March Madness, Holiday Campaign, Q2 Brand Refresh
+- **Agents:** 20+ agents across Strategy, Creative, Media, Operations
+- **Docket Items:** 5 tasks with contextual AI briefings
+- **Workflows:** 4 workflows with horizontal step display
+- **Creative Concepts:** 4 concepts for March Madness
 
 ## Commands
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
+npm run dev          # Start development server
+npx tsc --noEmit     # Fast TypeScript check (use this!)
+git push             # Triggers Vercel deploy
 ```
-
-## Deployment
-
-Auto-deploys to Vercel on push to `main`.
-
-## When Making Changes
-
-1. **Reference the design file** — Open `/design-exploration-v4.html` in browser
-2. **Briefing, not dashboard** — Today page should feel like a newspaper
-3. **Sidebar has project hierarchy** — Clients expand to show projects
-4. **Dotti is for chat** — No chat input on home page
-5. **Colors:** Deloitte palette, warm background (`#FAF9F7`)
-6. **Typography:** Editorial feel, generous spacing
 
 ## Session Workflow
 
-1. **Read `handoff.md` first** — Contains current state and next steps
+1. **Read `HANDOFF.md` first** — Contains current state and recent changes
 2. **Check `error-log.md`** — Learn from past mistakes
-3. **Use TypeScript check before build** — `npx tsc --noEmit` is faster
-4. **Push to git for testing** — Vercel handles deployment, test on live site
-5. **Don't run multiple builds** — Kill stale processes first
+3. **Use TypeScript check** — `npx tsc --noEmit` is faster than build
+4. **Push to git** — Vercel handles deployment, test on live site
 
 ## Before Editing Components
 
 1. **Read the file first** — Write tool requires reading first
 2. **Grep for usages** — Check what props are used before changing interfaces
-3. **Update all usages together** — Don't leave TypeScript errors
+3. **Search for ALL instances** — A pattern may appear in multiple files
+4. **Update all usages together** — Don't leave TypeScript errors
+
+## Key Design Rules
+
+### Sidebar
+- Clients section contains both Projects AND Workflows
+- Each subsection is collapsible
+- No standalone "Workflows" top-level nav
+
+### Workflows
+- Always horizontal, never vertical
+- Use arrow connectors between steps
+- Wrap/snake to next line when needed
+- Completed steps have green connectors
+
+### Task Pages
+- Use `TaskLayout` (thin sidebar + context rail)
+- Structured briefing, not chat bubbles
+- "My Recommendation" panel with expandable options
+- Action buttons at bottom
+
+### Creative Canvas
+- Toolbar at top (navigate, zoom, annotate, compare)
+- Canvas area shows concept details
+- Right rail has approval status and actions
+- Compare mode for side-by-side review
 
 ## Notes
 
-- This is a **prototype** - functionality is simulated with mock data
+- This is a **prototype** — functionality is simulated with mock data
 - AI responses are contextual but predefined (no real AI backend)
 - Designed for desktop; mobile responsiveness is limited
 - Dotti (green dot) is always present in bottom-right corner

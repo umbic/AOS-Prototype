@@ -1,20 +1,31 @@
-# Error Log - Session Feb 2, 2026
+# Error Log - AgencyOS Prototype
 
-## Mistakes Made
+## Session Feb 2, 2026 (Afternoon)
+
+### 1. Updated Wrong Workflow Display
+**What happened:** User asked for horizontal workflows. Updated the task context sidebar but missed the main workflow detail page (`/workflow/[id]`) which uses a completely different component (`WorkflowMap`).
+
+**Impact:** Had to make a second round of edits after user showed screenshot.
+
+**Prevention:** When asked to change a UI pattern, search for ALL instances:
+```bash
+# Find all workflow-related components
+grep -r "workflow" --include="*.tsx" components/ app/
+```
+
+---
+
+## Session Feb 2, 2026 (Morning)
 
 ### 1. Tried to Write Files Before Reading Them
-**What happened:** Attempted to use the Write tool on `sidebar.tsx` and `main-layout.tsx` without reading them first. The tool requires reading a file before writing to it.
-
-**Impact:** Wasted 2 round trips.
+**What happened:** Attempted to use the Write tool on `sidebar.tsx` and `main-layout.tsx` without reading them first.
 
 **Prevention:** Always use Read tool on any existing file before attempting to Write or Edit it.
 
 ---
 
 ### 2. Didn't Check for Prop Dependencies Before Changing Component Interface
-**What happened:** Changed `MainLayout` to remove the `rightRail` prop without first checking which pages used it. Three pages (agents, calendar, workflow) had TypeScript errors.
-
-**Impact:** Had to track down and fix errors after the fact.
+**What happened:** Changed `MainLayout` to remove the `rightRail` prop without first checking which pages used it.
 
 **Prevention:** Before changing a component's interface:
 1. Grep for all usages of the component
@@ -24,38 +35,24 @@
 ---
 
 ### 3. Started Multiple Background Builds Without Monitoring
-**What happened:** Launched 3+ background build processes that all ran in parallel, consuming resources and making subsequent builds slow.
-
-**Impact:** Builds hung for several minutes; had to manually kill processes.
+**What happened:** Launched 3+ background build processes that all ran in parallel.
 
 **Prevention:**
-- Use `block: true` for builds to wait for completion
-- If running in background, check and kill stale processes before starting new ones
-- Monitor with `ps aux | grep "next build"` before launching new builds
+- Use `npx tsc --noEmit` for quick checks (faster than full build)
+- Push to git and let Vercel handle builds
+- Kill stale processes before starting new ones
 
 ---
 
-### 4. Excessive Waiting/Polling on Slow Tasks
-**What happened:** Kept polling the build output with `sleep 30` commands multiple times instead of letting it run and moving on.
+## Quick Reference
 
-**Impact:** Wasted time on repeated checks; made the session feel slow.
-
-**Prevention:**
-- For builds: Just push to git and let Vercel handle it (per user's workflow)
-- If local verification needed, run TypeScript check (`npx tsc --noEmit`) which is faster
-- Don't poll more than once; trust the background task notification
-
----
-
-## Summary
-
-| Mistake | Root Cause | Fix |
-|---------|-----------|-----|
-| Write before Read | Didn't know tool requirement | Always Read first |
-| Prop interface change | Didn't check usages | Grep for usages before changing |
-| Multiple builds | No process management | Kill stale processes, use blocking |
-| Excessive polling | Impatience | Use faster checks or trust Vercel |
+| Mistake | Fix |
+|---------|-----|
+| Write before Read | Always Read first |
+| Change interface without checking usages | Grep for usages first |
+| Multiple background builds | Use tsc check, push to Vercel |
+| Updated one component but missed others | Search for ALL instances of a pattern |
 
 ---
 
-*Next session: Apply these learnings. Be faster, check dependencies upfront.*
+*Keep this file updated each session.*
