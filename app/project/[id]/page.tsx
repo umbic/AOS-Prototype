@@ -34,8 +34,8 @@ export default function ProjectPage() {
 
   return (
     <MainLayoutCentered pageContext={project.name}>
-      <div className="flex-1 flex items-start justify-center px-8 py-12">
-        <div className="w-full max-w-xl">
+      <div className="flex-1 px-12 py-10">
+        <div className="w-full max-w-5xl mx-auto">
           {/* Back link */}
           <Link
             href="/today"
@@ -46,35 +46,35 @@ export default function ProjectPage() {
           </Link>
 
           {/* Header */}
-          <header className="text-center mb-10">
+          <header className="mb-10">
             {client && (
               <p className="text-sm text-neutral-400 mb-2">{client.name}</p>
             )}
-            <h1 className="text-2xl font-semibold text-black">
-              {project.name}
-              <span className="text-deloitte-green">.</span>
-            </h1>
-
-            {/* Quick status - conversational */}
-            <p className="mt-4 text-neutral-500">
-              {project.daysUntilLaunch
-                ? `${project.daysUntilLaunch} days until launch. `
-                : ''
-              }
-              {activeWorkflows > 0
-                ? `${activeWorkflows} workflow${activeWorkflows > 1 ? 's' : ''} in progress.`
-                : 'No active workflows.'
-              }
-            </p>
+            <div className="flex items-baseline justify-between">
+              <h1 className="text-2xl font-semibold text-black">
+                {project.name}
+                <span className="text-deloitte-green">.</span>
+              </h1>
+              <p className="text-neutral-500">
+                {project.daysUntilLaunch
+                  ? `${project.daysUntilLaunch} days until launch · `
+                  : ''
+                }
+                {activeWorkflows > 0
+                  ? `${activeWorkflows} workflow${activeWorkflows > 1 ? 's' : ''} in progress`
+                  : 'No active workflows'
+                }
+              </p>
+            </div>
           </header>
 
           {/* What needs attention */}
           {projectDocketItems.length > 0 && (
             <section className="mb-10">
-              <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider text-center mb-4">
+              <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-4">
                 Needs your attention
               </h2>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {projectDocketItems.map((item, i) => (
                   <div
                     key={item.id}
@@ -93,73 +93,76 @@ export default function ProjectPage() {
             </section>
           )}
 
-          {/* Progress summary - simple, not a dashboard */}
-          <section className="mb-10">
-            <div className="bg-white border border-neutral-100 rounded-xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-black">Progress</h3>
-                <span className="text-sm text-neutral-400">
-                  {completedSteps} of {totalSteps} steps complete
-                </span>
-              </div>
+          {/* Progress and Documents - side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Progress summary */}
+            <section className="lg:col-span-2">
+              <div className="bg-white border border-neutral-100 rounded-xl p-6 h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-medium text-black">Progress</h3>
+                  <span className="text-sm text-neutral-400">
+                    {completedSteps} of {totalSteps} steps complete
+                  </span>
+                </div>
 
-              {/* Simple progress bar */}
-              <div className="h-2 bg-neutral-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-deloitte-green rounded-full transition-all duration-500"
-                  style={{ width: `${totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0}%` }}
-                />
-              </div>
+                {/* Simple progress bar */}
+                <div className="h-2 bg-neutral-100 rounded-full overflow-hidden mb-6">
+                  <div
+                    className="h-full bg-deloitte-green rounded-full transition-all duration-500"
+                    style={{ width: `${totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0}%` }}
+                  />
+                </div>
 
-              {/* Workflow status - conversational list */}
-              <div className="mt-5 space-y-3">
-                {workflows.map(workflow => {
-                  const currentStep = workflow.steps.find(s => s.status === 'current')
-                  const isComplete = workflow.status === 'completed'
+                {/* Workflow status */}
+                <div className="space-y-3">
+                  {workflows.map(workflow => {
+                    const currentStep = workflow.steps.find(s => s.status === 'current')
+                    const isComplete = workflow.status === 'completed'
 
-                  return (
-                    <Link
-                      key={workflow.id}
-                      href={`/workflow/${workflow.id}`}
-                      className="flex items-center gap-3 text-sm group"
-                    >
-                      {isComplete ? (
-                        <CheckCircle2 className="w-4 h-4 text-deloitte-green flex-shrink-0" />
-                      ) : (
-                        <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                      )}
-                      <span className="text-neutral-600 group-hover:text-black transition-colors">
-                        {workflow.name}
-                        {currentStep && (
-                          <span className="text-neutral-400"> — {currentStep.name}</span>
+                    return (
+                      <Link
+                        key={workflow.id}
+                        href={`/workflow/${workflow.id}`}
+                        className="flex items-center gap-3 text-sm group"
+                      >
+                        {isComplete ? (
+                          <CheckCircle2 className="w-4 h-4 text-deloitte-green flex-shrink-0" />
+                        ) : (
+                          <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
                         )}
-                      </span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          </section>
-
-          {/* Key documents - minimal */}
-          {project.documents.length > 0 && (
-            <section>
-              <h2 className="text-xs font-medium text-neutral-400 uppercase tracking-wider text-center mb-4">
-                Key documents
-              </h2>
-              <div className="space-y-2">
-                {project.documents.slice(0, 3).map(doc => (
-                  <button
-                    key={doc.id}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-white border border-neutral-100 rounded-xl hover:border-neutral-200 transition-colors text-left"
-                  >
-                    <FileText className="w-4 h-4 text-neutral-400" />
-                    <span className="text-sm text-neutral-600">{doc.name}</span>
-                  </button>
-                ))}
+                        <span className="text-neutral-600 group-hover:text-black transition-colors">
+                          {workflow.name}
+                          {currentStep && (
+                            <span className="text-neutral-400"> — {currentStep.name}</span>
+                          )}
+                        </span>
+                      </Link>
+                    )
+                  })}
+                </div>
               </div>
             </section>
-          )}
+
+            {/* Key documents */}
+            {project.documents.length > 0 && (
+              <section>
+                <div className="bg-white border border-neutral-100 rounded-xl p-6 h-full">
+                  <h3 className="text-sm font-medium text-black mb-4">Documents</h3>
+                  <div className="space-y-2">
+                    {project.documents.slice(0, 4).map(doc => (
+                      <button
+                        key={doc.id}
+                        className="w-full flex items-center gap-3 px-3 py-2 hover:bg-neutral-50 rounded-lg transition-colors text-left"
+                      >
+                        <FileText className="w-4 h-4 text-neutral-400 flex-shrink-0" />
+                        <span className="text-sm text-neutral-600 truncate">{doc.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
         </div>
       </div>
     </MainLayoutCentered>

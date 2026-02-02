@@ -12,21 +12,21 @@ export default function TodayPage() {
 
   return (
     <MainLayoutCentered pageContext="Today">
-      <div className="flex-1 flex items-start justify-center px-8 py-16">
-        <div className="w-full max-w-xl">
+      <div className="flex-1 px-12 py-12">
+        <div className="w-full max-w-5xl mx-auto">
           {/* Header */}
-          <header className="text-center mb-12">
+          <header className="mb-10">
             <h1 className="text-3xl font-semibold text-black">
               {getGreeting()}, {currentUser.firstName}
               <span className="text-deloitte-green">.</span>
             </h1>
-            <p className="mt-3 text-neutral-400">
+            <p className="mt-2 text-neutral-400">
               {docketItems.length} items need your attention
             </p>
           </header>
 
           {/* Suggestion indicator */}
-          <div className="flex justify-center mb-8">
+          <div className="mb-8">
             <button
               onClick={() => setShowSuggestion(!showSuggestion)}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm text-neutral-500 hover:text-deloitte-green hover:bg-deloitte-green/5 rounded-full transition-all"
@@ -38,7 +38,7 @@ export default function TodayPage() {
 
           {/* Suggestion dropdown */}
           {showSuggestion && (
-            <div className="mb-8 p-5 bg-white border border-neutral-100 rounded-xl animate-fade-in">
+            <div className="mb-8 p-5 bg-white border border-neutral-100 rounded-xl animate-fade-in max-w-lg">
               <p className="text-sm text-neutral-600 mb-4">
                 Here's what we could tackle:
               </p>
@@ -69,8 +69,8 @@ export default function TodayPage() {
             </div>
           )}
 
-          {/* Cards */}
-          <div className="space-y-3">
+          {/* Cards - Grid layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {docketItems.map((item, i) => (
               <div
                 key={item.id}

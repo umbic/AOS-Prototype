@@ -78,8 +78,8 @@ export default function TaskDetailPage() {
     <MainLayoutCentered pageContext={docketItem.title}>
       <div className="flex-1 flex flex-col h-screen">
         {/* Minimal header */}
-        <header className="px-8 py-4 border-b border-neutral-100 bg-white">
-          <div className="max-w-2xl mx-auto flex items-center justify-between">
+        <header className="px-12 py-4 border-b border-neutral-100 bg-white">
+          <div className="max-w-4xl mx-auto flex items-center justify-between">
             <Link
               href="/today"
               className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-600 transition-colors"
@@ -105,7 +105,7 @@ export default function TaskDetailPage() {
 
         {/* Conversation area */}
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-2xl mx-auto px-8 py-8">
+          <div className="max-w-4xl mx-auto px-12 py-8">
             {/* Task title */}
             <div className="text-center mb-8">
               <p className="text-sm text-neutral-400 mb-2">{docketItem.projectName}</p>
@@ -180,8 +180,8 @@ export default function TaskDetailPage() {
         </div>
 
         {/* Input area */}
-        <div className="border-t border-neutral-100 bg-white px-8 py-4">
-          <div className="max-w-2xl mx-auto">
+        <div className="border-t border-neutral-100 bg-white px-12 py-4">
+          <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-3 bg-neutral-50 rounded-xl px-4 py-3">
               <button className="text-neutral-400 hover:text-neutral-600 transition-colors">
                 <Paperclip className="w-5 h-5" />
