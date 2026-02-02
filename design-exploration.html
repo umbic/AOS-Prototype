@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgencyOS - Design Exploration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #f5f5f5;
+      color: #0a0a0a;
+      line-height: 1.5;
+    }
+
+    .exploration-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #000;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      gap: 8px;
+      z-index: 1000;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .exploration-nav a {
+      color: #888;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .exploration-nav a:hover,
+    .exploration-nav a.active {
+      color: #fff;
+      background: #333;
+    }
+
+    .exploration-nav span {
+      color: #86BC24;
+      font-weight: 600;
+      padding: 6px 0;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 80px 40px 40px;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .section-label {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #000;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 100;
+    }
+
+    /* Dotti button - appears on all */
+    .dotti-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: #86BC24;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(134, 188, 36, 0.3);
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .dotti-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 24px rgba(134, 188, 36, 0.4);
+    }
+
+    .dotti-button .dot {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    /* ============================================
+       OPTION A: Cards Grid
+       ============================================ */
+    .option-a {
+      background: #fafafa;
+    }
+
+    .option-a .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-top: 60px;
+    }
+
+    .option-a .greeting {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .option-a .greeting h1 {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .option-a .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-a .greeting p {
+      color: #737373;
+      margin-top: 8px;
+      font-size: 15px;
+    }
+
+    .option-a .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .option-a .card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-a .card:hover {
+      border-color: #d4d4d4;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .option-a .card.urgent {
+      border-left: 3px solid #ef4444;
+    }
+
+    .option-a .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .option-a .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .option-a .card-icon.blue { background: #eff6ff; }
+    .option-a .card-icon.amber { background: #fffbeb; }
+    .option-a .card-icon.purple { background: #faf5ff; }
+    .option-a .card-icon.red { background: #fef2f2; }
+    .option-a .card-icon.green { background: #f0fdf4; }
+
+    .option-a .card-project {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a3a3a3;
+    }
+
+    .option-a .card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .option-a .card p {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    /* ============================================
+       OPTION B: Centered Pills (ChatGPT style)
+       ============================================ */
+    .option-b {
+      background: #fff;
+    }
+
+    .option-b .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding-top: 120px;
+      text-align: center;
+    }
+
+    .option-b .greeting h1 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .option-b .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-b .brief {
+      font-size: 16px;
+      color: #525252;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    .option-b .brief strong {
+      color: #0a0a0a;
+      font-weight: 500;
+    }
+
+    .option-b .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .option-b .pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      border-radius: 100px;
+      font-size: 14px;
+      color: #525252;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-b .pill:hover {
+      background: #f5f5f5;
+      border-color: #d4d4d4;
+      color: #0a0a0a;
+    }
+
+    .option-b .pill-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .option-b .pill-icon.blue { background: #dbeafe; color: #2563eb; }
+    .option-b .pill-icon.amber { background: #fef3c7; color: #d97706; }
+    .option-b .pill-icon.red { background: #fee2e2; color: #dc2626; }
+    .option-b .pill-icon.purple { background: #f3e8ff; color: #9333ea; }
+    .option-b .pill-icon.green { background: #dcfce7; color: #16a34a; }
+
+    /* ============================================
+       OPTION C: Dashboard Sections
+       ============================================ */
+    .option-c {
+      background: #fafafa;
+    }
+
+    .option-c .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding-top: 40px;
+    }
+
+    .option-c .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+
+    .option-c .greeting h1 {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .option-c .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-c .greeting p {
+      color: #737373;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .option-c .time-indicator {
+      text-align: right;
+      font-size: 13px;
+      color: #a3a3a3;
+    }
+
+    .option-c .time-indicator strong {
+      display: block;
+      font-size: 15px;
+      color: #0a0a0a;
+      font-weight: 500;
+    }
+
+    .option-c .sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .option-c .section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .option-c .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a3a3a3;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .option-c .section-title .badge {
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 100px;
+    }
+
+    .option-c .list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+    }
+
+    .option-c .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .option-c .list-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .option-c .list-dot.red { background: #ef4444; }
+    .option-c .list-dot.blue { background: #3b82f6; }
+    .option-c .list-dot.amber { background: #f59e0b; }
+    .option-c .list-dot.green { background: #22c55e; }
+
+    .option-c .list-item h4 {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .option-c .list-item p {
+      font-size: 12px;
+      color: #a3a3a3;
+    }
+
+    /* ============================================
+       OPTION D: Briefing Card
+       ============================================ */
+    .option-d {
+      background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
+    }
+
+    .option-d .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-top: 80px;
+    }
+
+    .option-d .greeting {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .option-d .greeting h1 {
+      font-size: 36px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+
+    .option-d .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-d .briefing-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+      margin-bottom: 24px;
+    }
+
+    .option-d .briefing-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .option-d .briefing-dot {
+      width: 10px;
+      height: 10px;
+      background: #86BC24;
+      border-radius: 50%;
+    }
+
+    .option-d .briefing-header span {
+      font-size: 13px;
+      color: #a3a3a3;
+    }
+
+    .option-d .briefing-content {
+      font-size: 16px;
+      color: #404040;
+      line-height: 1.7;
+    }
+
+    .option-d .briefing-content strong {
+      color: #0a0a0a;
+      font-weight: 500;
+    }
+
+    .option-d .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .option-d .action-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-d .action-card:hover {
+      border-color: #86BC24;
+    }
+
+    .option-d .action-card.highlight {
+      background: linear-gradient(135deg, #f7fee7 0%, #ecfccb 100%);
+      border-color: #86BC24;
+    }
+
+    .option-d .action-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .option-d .action-icon.red { background: #fef2f2; }
+    .option-d .action-icon.blue { background: #eff6ff; }
+    .option-d .action-icon.amber { background: #fffbeb; }
+    .option-d .action-icon.green { background: #f0fdf4; }
+
+    .option-d .action-card h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .option-d .action-card p {
+      font-size: 12px;
+      color: #737373;
+    }
+
+    /* ============================================
+       OPTION E: Ultra Minimal
+       ============================================ */
+    .option-e {
+      background: #fff;
+    }
+
+    .option-e .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding-top: 140px;
+      text-align: center;
+    }
+
+    .option-e .greeting h1 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 32px;
+    }
+
+    .option-e .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-e .summary {
+      font-size: 15px;
+      color: #737373;
+      margin-bottom: 48px;
+    }
+
+    .option-e .summary strong {
+      color: #0a0a0a;
+    }
+
+    .option-e .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .option-e .action-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .option-e .action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: 1px solid #e5e5e5;
+      border-radius: 100px;
+      font-size: 14px;
+      color: #525252;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .option-e .action:hover {
+      border-color: #86BC24;
+      color: #0a0a0a;
+    }
+
+    .option-e .action.primary {
+      background: #0a0a0a;
+      border-color: #0a0a0a;
+      color: #fff;
+    }
+
+    .option-e .action .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .option-e .action .dot.red { background: #ef4444; }
+    .option-e .action .dot.blue { background: #3b82f6; }
+    .option-e .action .dot.amber { background: #f59e0b; }
+
+    /* ============================================
+       OPTION F: Dark Sidebar (Privado style)
+       ============================================ */
+    .option-f {
+      background: #fafafa;
+      display: flex;
+      padding: 60px 0 0 0;
+    }
+
+    .option-f .sidebar {
+      width: 220px;
+      background: #111;
+      min-height: calc(100vh - 60px);
+      padding: 24px 0;
+      position: fixed;
+      left: 0;
+      top: 60px;
+      bottom: 0;
+    }
+
+    .option-f .sidebar-logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid #222;
+      margin-bottom: 16px;
+    }
+
+    .option-f .sidebar-logo h2 {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .option-f .sidebar-logo .dot {
+      width: 6px;
+      height: 6px;
+      background: #86BC24;
+      border-radius: 50%;
+    }
+
+    .option-f .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .option-f .sidebar-nav a:hover {
+      color: #fff;
+      background: #1a1a1a;
+    }
+
+    .option-f .sidebar-nav a.active {
+      color: #fff;
+      background: #86BC24;
+    }
+
+    .option-f .main-content {
+      margin-left: 220px;
+      padding: 40px;
+      flex: 1;
+    }
+
+    .option-f .greeting h1 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .option-f .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-f .greeting p {
+      color: #737373;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .option-f .task-list {
+      max-width: 600px;
+    }
+
+    .option-f .task-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .option-f .task-item:hover {
+      border-color: #86BC24;
+    }
+
+    .option-f .task-item.urgent {
+      border-left: 3px solid #ef4444;
+    }
+
+    .option-f .task-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .option-f .task-dot.red { background: #ef4444; }
+    .option-f .task-dot.blue { background: #3b82f6; }
+    .option-f .task-dot.amber { background: #f59e0b; }
+    .option-f .task-dot.green { background: #22c55e; }
+
+    .option-f .task-content h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .option-f .task-content p {
+      font-size: 12px;
+      color: #737373;
+    }
+
+    .option-f .task-arrow {
+      margin-left: auto;
+      color: #d4d4d4;
+    }
+
+    /* ============================================
+       OPTION G: Big Typography
+       ============================================ */
+    .option-g {
+      background: #fff;
+    }
+
+    .option-g .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding-top: 100px;
+    }
+
+    .option-g .greeting h1 {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 48px;
+    }
+
+    .option-g .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-g .greeting h1 strong {
+      font-weight: 500;
+    }
+
+    .option-g .task-list {
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .option-g .task-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+      border-bottom: 1px solid #e5e5e5;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .option-g .task-row:hover {
+      padding-left: 12px;
+    }
+
+    .option-g .task-row h3 {
+      font-size: 18px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .option-g .task-row .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .option-g .task-row .dot.red { background: #ef4444; }
+    .option-g .task-row .dot.blue { background: #3b82f6; }
+    .option-g .task-row .dot.amber { background: #f59e0b; }
+    .option-g .task-row .dot.green { background: #22c55e; }
+
+    .option-g .task-row span {
+      font-size: 13px;
+      color: #a3a3a3;
+    }
+
+    /* ============================================
+       OPTION H: Horizontal Scroll Pills
+       ============================================ */
+    .option-h {
+      background: #fafafa;
+    }
+
+    .option-h .container {
+      max-width: 100%;
+      padding-top: 80px;
+    }
+
+    .option-h .greeting {
+      text-align: center;
+      margin-bottom: 48px;
+      padding: 0 40px;
+    }
+
+    .option-h .greeting h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .option-h .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-h .greeting p {
+      color: #737373;
+      font-size: 15px;
+    }
+
+    .option-h .pills-scroll {
+      display: flex;
+      gap: 16px;
+      padding: 0 40px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+
+    .option-h .pill-card {
+      flex-shrink: 0;
+      width: 280px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #e5e5e5;
+    }
+
+    .option-h .pill-card:hover {
+      border-color: #86BC24;
+      transform: translateY(-2px);
+    }
+
+    .option-h .pill-card.urgent {
+      background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+      border-color: #fecaca;
+    }
+
+    .option-h .pill-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a3a3a3;
+    }
+
+    .option-h .pill-header .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .option-h .pill-header .dot.red { background: #ef4444; }
+    .option-h .pill-header .dot.blue { background: #3b82f6; }
+    .option-h .pill-header .dot.amber { background: #f59e0b; }
+    .option-h .pill-header .dot.green { background: #22c55e; }
+
+    .option-h .pill-card h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .option-h .pill-card p {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    /* ============================================
+       OPTION I: Agenda/Timeline
+       ============================================ */
+    .option-i {
+      background: #fff;
+    }
+
+    .option-i .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding-top: 80px;
+    }
+
+    .option-i .greeting {
+      margin-bottom: 48px;
+    }
+
+    .option-i .greeting h1 {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .option-i .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-i .greeting p {
+      color: #737373;
+      font-size: 14px;
+    }
+
+    .option-i .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .option-i .timeline::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: #e5e5e5;
+    }
+
+    .option-i .timeline-item {
+      position: relative;
+      padding: 16px 0 16px 24px;
+      cursor: pointer;
+    }
+
+    .option-i .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 24px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #e5e5e5;
+      border: 2px solid #fff;
+    }
+
+    .option-i .timeline-item.urgent::before {
+      background: #ef4444;
+    }
+
+    .option-i .timeline-item.active::before {
+      background: #86BC24;
+    }
+
+    .option-i .timeline-time {
+      font-size: 12px;
+      color: #a3a3a3;
+      margin-bottom: 4px;
+    }
+
+    .option-i .timeline-item h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .option-i .timeline-item p {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    /* ============================================
+       OPTION J: Card Stack
+       ============================================ */
+    .option-j {
+      background: linear-gradient(180deg, #f5f5f5 0%, #e5e5e5 100%);
+    }
+
+    .option-j .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-top: 80px;
+      text-align: center;
+    }
+
+    .option-j .greeting h1 {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 40px;
+    }
+
+    .option-j .greeting h1 span {
+      color: #86BC24;
+    }
+
+    .option-j .card-stack {
+      position: relative;
+      height: 320px;
+    }
+
+    .option-j .stacked-card {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .option-j .stacked-card:nth-child(1) {
+      top: 0;
+      z-index: 5;
+    }
+
+    .option-j .stacked-card:nth-child(2) {
+      top: 12px;
+      z-index: 4;
+      transform: translateX(-50%) scale(0.96);
+      opacity: 0.7;
+    }
+
+    .option-j .stacked-card:nth-child(3) {
+      top: 24px;
+      z-index: 3;
+      transform: translateX(-50%) scale(0.92);
+      opacity: 0.4;
+    }
+
+    .option-j .stacked-card:hover:nth-child(1) {
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    .option-j .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fef2f2;
+      border-radius: 100px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #dc2626;
+      margin-bottom: 16px;
+    }
+
+    .option-j .stacked-card h3 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .option-j .stacked-card p {
+      font-size: 14px;
+      color: #737373;
+      margin-bottom: 24px;
+    }
+
+    .option-j .card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: #0a0a0a;
+      color: #fff;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .option-j .card-count {
+      margin-top: 24px;
+      font-size: 13px;
+      color: #a3a3a3;
+    }
+
+    /* ============================================
+       OPTION K: Notion-style
+       ============================================ */
+    .option-k {
+      background: #fff;
+    }
+
+    .option-k .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    .option-k .greeting {
+      margin-bottom: 32px;
+    }
+
+    .option-k .greeting h1 {
+      font-size: 40px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .option-k .greeting p {
+      font-size: 16px;
+      color: #9a9a9a;
+    }
+
+    .option-k .section-header {
+      font-size: 12px;
+      color: #9a9a9a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      margin-top: 32px;
+    }
+
+    .option-k .notion-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 8px;
+      margin: 0 -8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .option-k .notion-item:hover {
+      background: #f7f7f7;
+    }
+
+    .option-k .notion-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .option-k .notion-content h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .option-k .notion-content p {
+      font-size: 13px;
+      color: #9a9a9a;
+    }
+
+    .option-k .notion-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-left: 8px;
+    }
+
+    .option-k .notion-tag.red { background: #ffe2e2; color: #c94040; }
+    .option-k .notion-tag.blue { background: #e2edff; color: #4078c9; }
+
+    /* ============================================
+       OPTION L: Magazine Editorial
+       ============================================ */
+    .option-l {
+      background: #f8f6f3;
+    }
+
+    .option-l .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-top: 60px;
+    }
+
+    .option-l .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e2dd;
+    }
+
+    .option-l .greeting h1 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #86BC24;
+      font-weight: 600;
+    }
+
+    .option-l .date {
+      font-size: 13px;
+      color: #a3a3a3;
+    }
+
+    .option-l .headline {
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 48px;
+      max-width: 700px;
+    }
+
+    .option-l .headline strong {
+      font-weight: 500;
+    }
+
+    .option-l .story-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+
+    .option-l .main-story {
+      background: #fff;
+      padding: 32px;
+      border-radius: 4px;
+    }
+
+    .option-l .story-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #ef4444;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .option-l .main-story h2 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .option-l .main-story p {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .option-l .side-stories {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .option-l .side-story {
+      background: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .option-l .side-story:hover {
+      transform: translateX(4px);
+    }
+
+    .option-l .side-story h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .option-l .side-story p {
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <nav class="exploration-nav">
+    <span>Design Exploration</span>
+    <a href="#" data-option="a" class="active" onclick="showOption('a', event)">A: Cards</a>
+    <a href="#" data-option="b" onclick="showOption('b', event)">B: Pills</a>
+    <a href="#" data-option="c" onclick="showOption('c', event)">C: Dashboard</a>
+    <a href="#" data-option="d" onclick="showOption('d', event)">D: Briefing</a>
+    <a href="#" data-option="e" onclick="showOption('e', event)">E: Minimal</a>
+    <a href="#" data-option="f" onclick="showOption('f', event)">F: Dark Sidebar</a>
+    <a href="#" data-option="g" onclick="showOption('g', event)">G: Big Type</a>
+    <a href="#" data-option="h" onclick="showOption('h', event)">H: H-Scroll</a>
+    <a href="#" data-option="i" onclick="showOption('i', event)">I: Timeline</a>
+    <a href="#" data-option="j" onclick="showOption('j', event)">J: Card Stack</a>
+    <a href="#" data-option="k" onclick="showOption('k', event)">K: Notion</a>
+    <a href="#" data-option="l" onclick="showOption('l', event)">L: Magazine</a>
+  </nav>
+
+  <!-- OPTION A -->
+  <section id="option-a" class="option-a active">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+        <p>5 things need your attention today</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card urgent">
+          <div class="card-header">
+            <div class="card-icon red">⚠️</div>
+            <span class="card-project">March Madness</span>
+          </div>
+          <h3>Timeline at risk</h3>
+          <p>Asset delivery deadline in 5 days</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon blue">📊</div>
+            <span class="card-project">Holiday Campaign</span>
+          </div>
+          <h3>Review final metrics</h3>
+          <p>ROAS hit 3.2x — ready for presentation</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon amber">💡</div>
+            <span class="card-project">March Madness</span>
+          </div>
+          <h3>Review creative concepts</h3>
+          <p>4 directions developed</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon green">📞</div>
+            <span class="card-project">Google</span>
+          </div>
+          <h3>Lin call at 2pm</h3>
+          <p>Talking points prepared</p>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">A: Cards Grid</div>
+  </section>
+
+  <!-- OPTION B -->
+  <section id="option-b" class="option-b">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+      </div>
+      <p class="brief">
+        You have <strong>5 things</strong> on your plate today.
+        There's a <strong>timeline risk on March Madness</strong> we should look at,
+        and <strong>Lin's call is at 2pm</strong>.
+      </p>
+      <div class="pills">
+        <div class="pill"><div class="pill-icon red">⚠</div>March Madness timeline</div>
+        <div class="pill"><div class="pill-icon blue">📊</div>Review holiday metrics</div>
+        <div class="pill"><div class="pill-icon amber">💡</div>Creative concepts</div>
+        <div class="pill"><div class="pill-icon green">📞</div>Prep for Lin call</div>
+        <div class="pill"><div class="pill-icon purple">🔍</div>New audience segment</div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">B: Centered Pills</div>
+  </section>
+
+  <!-- OPTION C -->
+  <section id="option-c" class="option-c">
+    <div class="container">
+      <div class="header">
+        <div class="greeting">
+          <h1>Good afternoon, Kenny<span>.</span></h1>
+          <p>Here's what's on your plate</p>
+        </div>
+        <div class="time-indicator">
+          <strong>2:00 PM</strong>
+          Lin call in 45 min
+        </div>
+      </div>
+      <div class="sections">
+        <div class="section">
+          <div class="section-title">Needs attention <span class="badge">1</span></div>
+          <div class="list-item">
+            <div class="list-dot red"></div>
+            <div><h4>March Madness timeline at risk</h4><p>Asset delivery in 5 days</p></div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot amber"></div>
+            <div><h4>Review creative concepts</h4><p>4 directions ready</p></div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">Ready for you</div>
+          <div class="list-item">
+            <div class="list-dot blue"></div>
+            <div><h4>Holiday campaign metrics</h4><p>ROAS 3.2x — above target</p></div>
+          </div>
+          <div class="list-item">
+            <div class="list-dot green"></div>
+            <div><h4>Lin call prep</h4><p>Docs and talking points ready</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">C: Dashboard Sections</div>
+  </section>
+
+  <!-- OPTION D -->
+  <section id="option-d" class="option-d">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+      </div>
+      <div class="briefing-card">
+        <div class="briefing-header">
+          <div class="briefing-dot"></div>
+          <span>Your daily brief</span>
+        </div>
+        <div class="briefing-content">
+          You have <strong>5 things</strong> today. The <strong>March Madness timeline</strong> is tight — worth looking at first. Your <strong>call with Lin is at 2pm</strong>, and I've prepped everything.
+        </div>
+      </div>
+      <div class="action-grid">
+        <div class="action-card highlight">
+          <div class="action-icon red">⚠️</div>
+          <h3>Timeline at risk</h3>
+          <p>March Madness · 5 days left</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon blue">📊</div>
+          <h3>Review metrics</h3>
+          <p>Holiday Campaign</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon amber">💡</div>
+          <h3>Creative concepts</h3>
+          <p>4 directions ready</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon green">📞</div>
+          <h3>Lin call at 2pm</h3>
+          <p>Docs prepared</p>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">D: Briefing Card</div>
+  </section>
+
+  <!-- OPTION E -->
+  <section id="option-e" class="option-e">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+      </div>
+      <p class="summary"><strong>5 things</strong> today. One needs attention.</p>
+      <div class="actions">
+        <div class="action-row">
+          <div class="action primary"><span class="dot red"></span>March Madness timeline</div>
+        </div>
+        <div class="action-row">
+          <div class="action"><span class="dot blue"></span>Holiday metrics</div>
+          <div class="action"><span class="dot amber"></span>Creative concepts</div>
+        </div>
+        <div class="action-row">
+          <div class="action">Lin call prep</div>
+          <div class="action">Audience discovery</div>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">E: Ultra Minimal</div>
+  </section>
+
+  <!-- OPTION F -->
+  <section id="option-f" class="option-f">
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <h2>AgencyOS <span class="dot"></span></h2>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active">🏠 Today</a>
+        <a href="#">📋 Workflows</a>
+        <a href="#">📅 Calendar</a>
+        <a href="#">🤖 Agents</a>
+        <a href="#">👥 Team</a>
+        <a href="#">⚙️ Settings</a>
+      </nav>
+    </div>
+    <div class="main-content">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+        <p>5 things need your attention today</p>
+      </div>
+      <div class="task-list">
+        <div class="task-item urgent">
+          <div class="task-dot red"></div>
+          <div class="task-content">
+            <h3>March Madness timeline at risk</h3>
+            <p>Asset delivery in 5 days, 2 steps still in progress</p>
+          </div>
+          <div class="task-arrow">→</div>
+        </div>
+        <div class="task-item">
+          <div class="task-dot blue"></div>
+          <div class="task-content">
+            <h3>Review holiday campaign metrics</h3>
+            <p>ROAS hit 3.2x — ready for client presentation</p>
+          </div>
+          <div class="task-arrow">→</div>
+        </div>
+        <div class="task-item">
+          <div class="task-dot amber"></div>
+          <div class="task-content">
+            <h3>Review creative concepts</h3>
+            <p>4 directions developed, need your input</p>
+          </div>
+          <div class="task-arrow">→</div>
+        </div>
+        <div class="task-item">
+          <div class="task-dot green"></div>
+          <div class="task-content">
+            <h3>Lin call at 2pm</h3>
+            <p>Talking points and docs prepared</p>
+          </div>
+          <div class="task-arrow">→</div>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">F: Dark Sidebar</div>
+  </section>
+
+  <!-- OPTION G -->
+  <section id="option-g" class="option-g">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span><br>You have <strong>5 things</strong> today.</h1>
+      </div>
+      <div class="task-list">
+        <div class="task-row">
+          <h3><span class="dot red"></span>March Madness timeline at risk</h3>
+          <span>5 days left</span>
+        </div>
+        <div class="task-row">
+          <h3><span class="dot blue"></span>Review holiday campaign metrics</h3>
+          <span>Ready</span>
+        </div>
+        <div class="task-row">
+          <h3><span class="dot amber"></span>Review creative concepts</h3>
+          <span>4 options</span>
+        </div>
+        <div class="task-row">
+          <h3><span class="dot green"></span>Lin call prep</h3>
+          <span>2:00 PM</span>
+        </div>
+        <div class="task-row">
+          <h3><span class="dot blue"></span>Audience discovery</h3>
+          <span>New segment</span>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">G: Big Typography</div>
+  </section>
+
+  <!-- OPTION H -->
+  <section id="option-h" class="option-h">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+        <p>5 things need your attention today</p>
+      </div>
+      <div class="pills-scroll">
+        <div class="pill-card urgent">
+          <div class="pill-header"><span class="dot red"></span>Urgent</div>
+          <h3>March Madness timeline at risk</h3>
+          <p>Asset delivery deadline in 5 days, 2 production steps still in progress</p>
+        </div>
+        <div class="pill-card">
+          <div class="pill-header"><span class="dot blue"></span>Holiday Campaign</div>
+          <h3>Review final metrics</h3>
+          <p>ROAS hit 3.2x against 2.8x target. Ready for client presentation.</p>
+        </div>
+        <div class="pill-card">
+          <div class="pill-header"><span class="dot amber"></span>Creative</div>
+          <h3>Review concepts</h3>
+          <p>4 creative directions developed based on the brief. Need your input.</p>
+        </div>
+        <div class="pill-card">
+          <div class="pill-header"><span class="dot green"></span>2:00 PM</div>
+          <h3>Lin call</h3>
+          <p>Talking points and presentation docs are prepared and ready.</p>
+        </div>
+        <div class="pill-card">
+          <div class="pill-header"><span class="dot blue"></span>Discovery</div>
+          <h3>New audience segment</h3>
+          <p>Found an interesting segment in the Q2 data worth exploring.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">H: Horizontal Scroll</div>
+  </section>
+
+  <!-- OPTION I -->
+  <section id="option-i" class="option-i">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+        <p>Here's your day</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item urgent">
+          <div class="timeline-time">Priority</div>
+          <h3>March Madness timeline at risk</h3>
+          <p>Asset delivery in 5 days — needs attention today</p>
+        </div>
+        <div class="timeline-item active">
+          <div class="timeline-time">Now</div>
+          <h3>Review holiday campaign metrics</h3>
+          <p>ROAS hit 3.2x — ready for presentation</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">Before 2pm</div>
+          <h3>Lin call prep</h3>
+          <p>Talking points and docs ready</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">2:00 PM</div>
+          <h3>Call with Lin</h3>
+          <p>Holiday review + March Madness update</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">When free</div>
+          <h3>Review creative concepts</h3>
+          <p>4 directions to choose from</p>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">I: Timeline/Agenda</div>
+  </section>
+
+  <!-- OPTION J -->
+  <section id="option-j" class="option-j">
+    <div class="container">
+      <div class="greeting">
+        <h1>Good afternoon, Kenny<span>.</span></h1>
+      </div>
+      <div class="card-stack">
+        <div class="stacked-card">
+          <div class="card-badge">⚠️ Needs attention</div>
+          <h3>March Madness timeline at risk</h3>
+          <p>Asset delivery deadline in 5 days, but 2 production steps are still in progress.</p>
+          <div class="card-action">Review now →</div>
+        </div>
+        <div class="stacked-card"></div>
+        <div class="stacked-card"></div>
+      </div>
+      <div class="card-count">1 of 5 items</div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">J: Card Stack</div>
+  </section>
+
+  <!-- OPTION K -->
+  <section id="option-k" class="option-k">
+    <div class="container">
+      <div class="greeting">
+        <h1>Today</h1>
+        <p>Good afternoon, Kenny. 5 things on your plate.</p>
+      </div>
+      <div class="section-header">Needs attention</div>
+      <div class="notion-item">
+        <div class="notion-icon">⚠️</div>
+        <div class="notion-content">
+          <h3>March Madness timeline at risk <span class="notion-tag red">Urgent</span></h3>
+          <p>Asset delivery in 5 days</p>
+        </div>
+      </div>
+      <div class="section-header">Ready for review</div>
+      <div class="notion-item">
+        <div class="notion-icon">📊</div>
+        <div class="notion-content">
+          <h3>Holiday campaign metrics <span class="notion-tag blue">Ready</span></h3>
+          <p>ROAS 3.2x — above target</p>
+        </div>
+      </div>
+      <div class="notion-item">
+        <div class="notion-icon">💡</div>
+        <div class="notion-content">
+          <h3>Creative concepts</h3>
+          <p>4 directions developed</p>
+        </div>
+      </div>
+      <div class="section-header">Upcoming</div>
+      <div class="notion-item">
+        <div class="notion-icon">📞</div>
+        <div class="notion-content">
+          <h3>Lin call at 2pm</h3>
+          <p>Docs and talking points ready</p>
+        </div>
+      </div>
+      <div class="notion-item">
+        <div class="notion-icon">🔍</div>
+        <div class="notion-content">
+          <h3>Audience discovery</h3>
+          <p>New segment found in Q2 data</p>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">K: Notion-style</div>
+  </section>
+
+  <!-- OPTION L -->
+  <section id="option-l" class="option-l">
+    <div class="container">
+      <div class="header">
+        <div class="greeting"><h1>Your Daily Brief</h1></div>
+        <div class="date">Monday, February 2</div>
+      </div>
+      <h2 class="headline">Good afternoon, Kenny. There's a <strong>timeline issue on March Madness</strong> worth addressing first.</h2>
+      <div class="story-grid">
+        <div class="main-story">
+          <div class="story-label">Priority</div>
+          <h2>March Madness timeline at risk</h2>
+          <p>Asset delivery deadline is in 5 days, but 2 production steps are still in progress. There are 3 options to get back on track — worth reviewing before your call with Lin at 2pm.</p>
+        </div>
+        <div class="side-stories">
+          <div class="side-story">
+            <h3>Holiday metrics ready</h3>
+            <p>ROAS 3.2x — above target</p>
+          </div>
+          <div class="side-story">
+            <h3>4 creative concepts</h3>
+            <p>Need your direction</p>
+          </div>
+          <div class="side-story">
+            <h3>Lin call at 2pm</h3>
+            <p>Prep docs ready</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dotti-button"><div class="dot"></div></div>
+    <div class="section-label">L: Magazine/Editorial</div>
+  </section>
+
+  <script>
+    function showOption(id, event) {
+      if (event) event.preventDefault();
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById('option-' + id).classList.add('active');
+      document.querySelectorAll('.exploration-nav a').forEach(a => a.classList.remove('active'));
+      document.querySelector(`.exploration-nav a[data-option="${id}"]`).classList.add('active');
+    }
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      showOption(id);
+    }
+  </script>
+</body>
+</html>

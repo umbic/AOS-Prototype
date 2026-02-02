@@ -9,157 +9,117 @@ AgencyOS is a high-fidelity prototype for an AI-agent-powered agency workflow ma
 
 ---
 
-## February 2026 Redesign
+## NEXT SESSION: Implement Approved Design
 
-### Design Philosophy Shift
+### What to Build
 
-**Before:** Dashboard-style UI ("here's your data organized in sections")
-**After:** Conversational workspace ("here's what we should do together today")
+The design has been approved. Reference file: **`/design-exploration-v4.html`**
 
-**Mental model:** A really good co-worker who already did the prep work and is ready to brief you, and work with you.
+Open this HTML file in a browser to see the exact design to implement.
 
-### What Changed
+### Implementation Tasks
 
-#### New Components Created
+#### 1. Create New Sidebar Component
+**File:** `/components/layout/sidebar.tsx`
 
-| Component | Path | Purpose |
-|-----------|------|---------|
-| `SidebarMinimal` | `/components/layout/sidebar-minimal.tsx` | Simplified sidebar (top-level nav only, no project tree) |
-| `MainLayoutCentered` | `/components/layout/main-layout-centered.tsx` | Centered layout with floating green chat button |
-| `ElegantCard` | `/components/cards/elegant-card.tsx` | Minimal card (icon + title + one line) |
-| `ChatPanelSlide` | `/components/chat/chat-panel-slide.tsx` | Slide-out chat panel from right, context-aware |
+Structure:
+- Logo: "AgencyOS" + green dot
+- Today nav item (active state = green background)
+- **PROJECTS** section header
+- Expandable client (Google) with chevron
+  - Nested projects: March Madness Campaign, Holiday Campaign, Q2 Brand Refresh
+- Main nav: Workflows, Calendar, Agent Store, Team
+- Bottom section: Settings, User profile (Kenny, Strategy Lead)
 
-#### Pages Redesigned
+Styling:
+- Width: 240px
+- Background: white
+- Border-right: 1px solid #e5e5e5
+- Nav items: 14px font, 10px 12px padding, 8px border-radius
+- Active state: #86BC24 background, white text
+- Projects nested with left padding
 
-| Page | Changes |
-|------|---------|
-| `/today` | Grid layout for cards, left-aligned greeting, subtle 90-min suggestion button |
-| `/today/[id]` | Full conversational AI briefing with quick actions, chat input at bottom |
-| `/project/[id]` | Horizontal layout, attention cards grid, progress + docs side by side |
+#### 2. Create New Main Layout Component
+**File:** `/components/layout/main-layout.tsx`
 
-#### Key Design Decisions
+- Flexbox container (sidebar + main content)
+- Sidebar on left
+- Main content area with warm background (#FAF9F7)
+- Dotti button fixed bottom-right (56px, green, white dot inside)
 
-1. **Green dot = contextual chat** — Always available, knows where you are in the app
-2. **Cards are minimal** — Icon + title + one line (no tags, time estimates, agent pills)
-3. **AI briefs you first** — Opens with recommendations, not raw data
-4. **Horizontal layouts** — Use screen real estate, 2-3 column grids
-5. **90-min suggestion tucked away** — Subtle button, expands on click
+#### 3. Redesign Today Page
+**File:** `/app/today/page.tsx`
 
-### Pages Still Using Old Layout
+Structure:
+1. **Masthead** (centered)
+   - Label: "Your Daily Brief" (11px uppercase, green, letter-spacing)
+   - Title: "Good afternoon, Kenny" (32px, font-weight 300)
+   - Subtitle: "Monday, February 2 · 5 items on your plate" (14px, gray)
+   - Border-bottom: 2px solid black
 
-These need updating to match the new design:
-- `/app/agents/page.tsx`
-- `/app/calendar/page.tsx`
-- `/app/workflows/page.tsx`
-- `/app/workflow/[id]/page.tsx`
-- `/app/team/page.tsx`
-- `/app/settings/page.tsx`
-- `/app/client/[id]/page.tsx`
+2. **Lead Story** (centered, padding 40px 0)
+   - Red tag: "Needs Attention" (10px uppercase, red on light red bg)
+   - Headline: "March Madness timeline at risk" (28px)
+   - Description paragraph (15px gray, max-width 560px)
+   - Border-bottom: 1px solid #e5e5e5
 
-### AI Briefing Content
+3. **Columns** (4-column grid, gap 24px)
+   - Each item: border-top 1px, h3 (14px 500), p (12px gray)
+   - Hover: title turns green
 
-Each task has contextual briefings in `getBriefingMessage()`:
+4. **NO chat input** — Dotti handles chat
 
-| Task | Briefing Summary |
-|------|------------------|
-| holiday-metrics-review | ROAS results, TikTok win, recommendation for client narrative |
-| march-madness-concepts | 4 concepts overview, which to present |
-| audience-discovery | New segment found, why interesting, test recommendation |
-| lin-call-prep | What she'll ask, watch-outs, documents ready |
-| timeline-risk | The issue, what's at risk, 3 options |
+#### 4. Keep Dotti Chat Panel
+The existing `/components/chat/chat-panel-slide.tsx` should work, just ensure it's triggered by the Dotti button in the new layout.
 
----
+### Design Specs (from design-exploration-v4.html)
 
-## Original Build (Pre-Redesign)
+| Element | Value |
+|---------|-------|
+| Sidebar width | 240px |
+| Sidebar bg | #FFFFFF |
+| Main content bg | #FAF9F7 |
+| Max content width | 800px |
+| Masthead title | 32px, weight 300 |
+| Lead story headline | 28px, weight 400 |
+| Column item title | 14px, weight 500 |
+| Green (active/accent) | #86BC24 |
+| Red (attention tag) | #EF4444 |
+| Tag background | #FEF2F2 |
 
-### Core Screens
+### Files to Delete/Replace
 
-| Screen | URL | Description |
-|--------|-----|-------------|
-| **Today View** | `/today` | Daily dashboard with prioritized task docket |
-| **Expanded Card** | `/today/[id]` | Task detail with canvas, agent attribution, chat |
-| **Workflow View** | `/workflow/[id]` | Visual workflow map with step details |
-| **Project View** | `/project/[id]` | Project hub with workflows, documents, team |
-| **Client View** | `/client/[id]` | Client profile with projects and contacts |
-| **Agent Store** | `/agents` | Browse and configure AI agents |
-| **Calendar** | `/calendar` | Weekly calendar with meeting prep |
-| **Workflows** | `/workflows` | All workflows across projects |
-| **Team** | `/team` | Team member management |
-| **Settings** | `/settings` | User preferences |
+These old components should be replaced:
+- `/components/layout/sidebar-minimal.tsx` → Replace with new `sidebar.tsx`
+- `/components/layout/main-layout-centered.tsx` → Replace with new `main-layout.tsx`
 
-### Key Features Demonstrated
+### Testing
 
-1. **AI Agent System**
-   - 20+ specialized agents across Strategy, Creative, Media, Operations
-   - Custom agent creation capability
-   - Agent attribution on tasks
-   - Conversational chat with contextual responses
-
-2. **Workflow Management**
-   - Visual node-based workflow maps
-   - Step-by-step progress tracking
-   - Agent and human task assignments
-
-3. **Canvas System**
-   - **Data Canvas:** Metrics visualization, KPI cards
-   - **Creative Canvas:** Concept review, compare mode
-
-4. **Time-Aware Intelligence**
-   - Proactive suggestions based on available time
-   - Meeting prep with talking points
-   - Timeline risk detection
+After implementation:
+1. Run `npm run build` to check for errors
+2. Push to git (triggers Vercel deploy)
+3. Test on live site: https://aos-prototype.vercel.app
 
 ---
 
-## Technical Implementation
+## Previous Context
 
-### Stack
-- **Next.js 14** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS 3.4** for styling
-- **Lucide React** for icons
-- **Vercel** for deployment
+### Design Exploration Process (Feb 2, 2026)
 
-### Architecture
+1. User provided inspiration images (ChatGPT home, Privado Dining)
+2. Created 12 initial design explorations (`design-exploration.html`)
+3. User liked Magazine/Editorial style (Option L)
+4. Created 6 magazine variations without sidebar (`design-exploration-v2.html`)
+5. Added sidebar variations (`design-exploration-v3.html`)
+6. User approved final design with project hierarchy sidebar (`design-exploration-v4.html`)
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      App Router                          │
-│  /today  /workflow/[id]  /project/[id]  /agents  etc.   │
-├─────────────────────────────────────────────────────────┤
-│                     Components                           │
-│  Layout │ Cards │ Canvas │ Chat │ Workflow              │
-├─────────────────────────────────────────────────────────┤
-│                    Data Layer                            │
-│  /lib/data.ts (mock data)  │  /lib/types.ts             │
-├─────────────────────────────────────────────────────────┤
-│                   Design System                          │
-│  Tailwind Config  │  Deloitte Brand  │  Custom Classes  │
-└─────────────────────────────────────────────────────────┘
-```
+### Key Design Decisions
 
----
-
-## Brand Implementation
-
-The prototype implements **Deloitte Digital** brand guidelines:
-
-### Color Palette
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Deloitte Green | `#86BC24` | Primary accent, CTAs, chat button |
-| Black | `#000000` | Text, user messages |
-| White | `#FFFFFF` | Backgrounds, cards |
-| Neutral 50-950 | Various | UI elements, borders |
-
-### Card Type Colors (New)
-| Type | Color |
-|------|-------|
-| Review | `bg-blue-50 text-blue-500` |
-| Creative | `bg-amber-50 text-amber-500` |
-| Discovery | `bg-purple-50 text-purple-500` |
-| Calendar | `bg-green-50 text-green-600` |
-| Operational | `bg-red-50 text-red-500` |
+1. **"Dotti" is the AI assistant** — The green dot chat button
+2. **No chat on home page** — Home is a briefing, click Dotti to chat
+3. **Newspaper/editorial style** — Masthead, lead story, columns
+4. **Project hierarchy sidebar** — Clients expand to show projects
+5. **Warm background** — #FAF9F7 instead of pure white/gray
 
 ---
 
@@ -171,51 +131,46 @@ The prototype implements **Deloitte Digital** brand guidelines:
 ### Client
 - **Google** - with contacts Lin Chen, David Park, Rachel Kim
 
-### Projects
+### Projects (under Google)
 1. **March Madness Campaign** - Active, 23 days to launch
 2. **Holiday Campaign** - Wrapping up, in review
 3. **Q2 Brand Refresh** - Early discovery phase
 
-### Docket Items
-1. Review holiday campaign performance (urgent)
-2. Creative concepts ready for March Madness (attention)
-3. New audience segment discovered (discovery)
-4. Prep for 2pm call with Lin (attention)
-5. March Madness timeline at risk (urgent)
+### Docket Items (for Today page)
+1. **March Madness timeline at risk** (operational/urgent) — LEAD STORY
+2. Review holiday campaign performance (review)
+3. Creative concepts ready for March Madness (creative)
+4. Prep for 2pm call with Lin (calendar)
+5. New audience segment discovered (discovery)
 
 ---
 
-## File Reference
+## Technical Notes
 
+### Stack
+- Next.js 14 with App Router
+- TypeScript
+- Tailwind CSS 3.4
+- Lucide React icons
+- Vercel deployment
+
+### Key Files
 | File | Purpose |
 |------|---------|
 | `/lib/data.ts` | All mock data |
 | `/lib/types.ts` | TypeScript interfaces |
-| `/tailwind.config.ts` | Design tokens, colors |
-| `/components/layout/sidebar-minimal.tsx` | New simplified sidebar |
-| `/components/layout/main-layout-centered.tsx` | New centered layout with chat |
-| `/components/cards/elegant-card.tsx` | New minimal card |
-| `/components/chat/chat-panel-slide.tsx` | New slide-out chat |
+| `/tailwind.config.ts` | Design tokens |
+| `/design-exploration-v4.html` | **Approved design reference** |
 
 ---
 
 ## Known Limitations
 
-1. **No Mobile Design** - Optimized for desktop only
-2. **Static Data** - No persistence between sessions
-3. **Simulated Chat** - Responses are predefined, not real AI
-4. **Partial Redesign** - Some pages still use old layout
-5. **Limited Interactivity** - Many buttons are placeholder
+1. **No Mobile Design** - Desktop only
+2. **Static Data** - No persistence
+3. **Simulated Chat** - Predefined responses
+4. **Prototype** - Many buttons are placeholders
 
 ---
 
-## Next Steps
-
-1. Update remaining pages to new design (Agents, Calendar, Workflows, Team, Settings)
-2. Refine AI briefing content based on feedback
-3. Consider mobile responsiveness
-4. Add more contextual chat behaviors
-
----
-
-*Last updated: February 2026*
+*Last updated: February 2, 2026*
