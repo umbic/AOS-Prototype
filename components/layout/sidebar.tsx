@@ -6,14 +6,16 @@ import { usePathname } from 'next/navigation'
 import {
   Calendar,
   ChevronDown,
+  ChevronRight,
   Home,
   Settings,
   Store,
   Users,
-  Workflow,
+  Workflow as WorkflowIcon,
+  FolderOpen,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { clients, getProjectsByClient } from '@/lib/data'
+import { clients, getProjectsByClient, workflows } from '@/lib/data'
 
 interface NavItemProps {
   href: string
@@ -44,6 +46,7 @@ function NavItem({ href, icon, label, isActive }: NavItemProps) {
 export function Sidebar() {
   const pathname = usePathname()
   const [expandedClients, setExpandedClients] = useState<string[]>(['google'])
+  const [expandedSections, setExpandedSections] = useState<string[]>(['google-projects', 'google-workflows'])
 
   const toggleClient = (clientId: string) => {
     setExpandedClients(prev =>
@@ -51,6 +54,21 @@ export function Sidebar() {
         ? prev.filter(id => id !== clientId)
         : [...prev, clientId]
     )
+  }
+
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev =>
+      prev.includes(sectionId)
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    )
+  }
+
+  // Get workflows by client (through projects)
+  const getWorkflowsByClient = (clientId: string) => {
+    const clientProjects = getProjectsByClient(clientId)
+    const projectIds = clientProjects.map(p => p.id)
+    return workflows.filter(w => projectIds.includes(w.projectId))
   }
 
   return (
@@ -73,10 +91,10 @@ export function Sidebar() {
         />
       </nav>
 
-      {/* Projects Section */}
+      {/* Clients Section */}
       <div className="px-3 pt-5 pb-2">
         <div className="px-3 text-[11px] font-semibold uppercase tracking-[0.05em] text-[#a3a3a3]">
-          Projects
+          Clients
         </div>
       </div>
 
@@ -84,12 +102,16 @@ export function Sidebar() {
         {clients.map(client => {
           const isExpanded = expandedClients.includes(client.id)
           const projects = getProjectsByClient(client.id)
+          const clientWorkflows = getWorkflowsByClient(client.id)
+          const projectsExpanded = expandedSections.includes(`${client.id}-projects`)
+          const workflowsExpanded = expandedSections.includes(`${client.id}-workflows`)
 
           return (
-            <div key={client.id}>
+            <div key={client.id} className="mb-1">
+              {/* Client header */}
               <button
                 onClick={() => toggleClient(client.id)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-neutral-900 hover:bg-neutral-100 rounded-lg transition-all duration-150"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-neutral-900 hover:bg-neutral-100 rounded-lg transition-all duration-150"
               >
                 <ChevronDown
                   className={cn(
@@ -101,21 +123,78 @@ export function Sidebar() {
               </button>
 
               {isExpanded && (
-                <div className="pl-9 space-y-0.5">
-                  {projects.map(project => (
-                    <Link
-                      key={project.id}
-                      href={`/project/${project.id}`}
-                      className={cn(
-                        'block px-3 py-2 text-[13px] rounded-md transition-all duration-150',
-                        pathname === `/project/${project.id}`
-                          ? 'text-neutral-900 bg-neutral-100'
-                          : 'text-[#737373] hover:text-neutral-900 hover:bg-neutral-100'
-                      )}
+                <div className="ml-3 border-l border-neutral-100 pl-2">
+                  {/* Projects subsection */}
+                  <div className="mt-1">
+                    <button
+                      onClick={() => toggleSection(`${client.id}-projects`)}
+                      className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-700 rounded transition-colors"
                     >
-                      {project.name}
-                    </Link>
-                  ))}
+                      <ChevronRight
+                        className={cn(
+                          'w-3 h-3 transition-transform duration-200',
+                          projectsExpanded && 'rotate-90'
+                        )}
+                      />
+                      <FolderOpen className="w-3.5 h-3.5" />
+                      Projects
+                      <span className="ml-auto text-[10px] text-neutral-400">{projects.length}</span>
+                    </button>
+                    {projectsExpanded && (
+                      <div className="ml-5 space-y-0.5 mt-1">
+                        {projects.map(project => (
+                          <Link
+                            key={project.id}
+                            href={`/project/${project.id}`}
+                            className={cn(
+                              'block px-2 py-1.5 text-[13px] rounded-md transition-all duration-150',
+                              pathname === `/project/${project.id}`
+                                ? 'text-neutral-900 bg-neutral-100'
+                                : 'text-[#737373] hover:text-neutral-900 hover:bg-neutral-100'
+                            )}
+                          >
+                            {project.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Workflows subsection */}
+                  <div className="mt-1">
+                    <button
+                      onClick={() => toggleSection(`${client.id}-workflows`)}
+                      className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-700 rounded transition-colors"
+                    >
+                      <ChevronRight
+                        className={cn(
+                          'w-3 h-3 transition-transform duration-200',
+                          workflowsExpanded && 'rotate-90'
+                        )}
+                      />
+                      <WorkflowIcon className="w-3.5 h-3.5" />
+                      Workflows
+                      <span className="ml-auto text-[10px] text-neutral-400">{clientWorkflows.length}</span>
+                    </button>
+                    {workflowsExpanded && (
+                      <div className="ml-5 space-y-0.5 mt-1">
+                        {clientWorkflows.map(workflow => (
+                          <Link
+                            key={workflow.id}
+                            href={`/workflow/${workflow.id}`}
+                            className={cn(
+                              'block px-2 py-1.5 text-[13px] rounded-md transition-all duration-150',
+                              pathname === `/workflow/${workflow.id}`
+                                ? 'text-neutral-900 bg-neutral-100'
+                                : 'text-[#737373] hover:text-neutral-900 hover:bg-neutral-100'
+                            )}
+                          >
+                            {workflow.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -123,13 +202,7 @@ export function Sidebar() {
         })}
 
         {/* Other Nav Items */}
-        <div className="mt-4 space-y-0.5">
-          <NavItem
-            href="/workflows"
-            icon={<Workflow className="w-[18px] h-[18px]" />}
-            label="Workflows"
-            isActive={pathname.startsWith('/workflow')}
-          />
+        <div className="mt-4 pt-4 border-t border-neutral-100 space-y-0.5">
           <NavItem
             href="/calendar"
             icon={<Calendar className="w-[18px] h-[18px]" />}
