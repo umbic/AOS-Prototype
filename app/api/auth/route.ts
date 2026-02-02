@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 
   const correctPassword = process.env.SITE_PASSWORD || 'margin call'
 
-  if (password === correctPassword) {
+  if (password.toLowerCase() === correctPassword.toLowerCase()) {
     const cookieStore = await cookies()
     cookieStore.set('aos-auth', 'authenticated', {
       httpOnly: true,
