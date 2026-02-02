@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import {
   Calendar,
   ChevronDown,
@@ -252,9 +253,13 @@ export function Sidebar() {
 
         {/* User Profile */}
         <div className="flex items-center gap-3 px-3 py-3 mt-2 rounded-lg hover:bg-neutral-100 transition-all duration-150 cursor-pointer">
-          <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white text-sm font-medium">
-            K
-          </div>
+          <Image
+            src="/avatars/kenny.jpg"
+            alt="Kenny"
+            width={36}
+            height={36}
+            className="w-9 h-9 rounded-full object-cover"
+          />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-black">Kenny</div>
             <div className="text-xs text-[#a3a3a3]">Strategy Lead</div>

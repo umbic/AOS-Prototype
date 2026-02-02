@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   Calendar,
@@ -95,12 +96,14 @@ export function SidebarThin() {
           label="Settings"
           isActive={pathname === '/settings'}
         />
-        <div
-          className="w-8 h-8 bg-neutral-200 rounded-full flex items-center justify-center text-xs font-medium cursor-pointer hover:ring-2 hover:ring-neutral-300 transition-all"
+        <Image
+          src="/avatars/kenny.jpg"
+          alt="Kenny"
+          width={32}
+          height={32}
+          className="w-8 h-8 rounded-full object-cover cursor-pointer hover:ring-2 hover:ring-neutral-300 transition-all"
           title="Kenny"
-        >
-          K
-        </div>
+        />
       </div>
     </aside>
   )

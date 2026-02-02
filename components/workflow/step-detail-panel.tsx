@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { Bot, Check, Clock, FileText, MessageCircle, Plus, SkipForward, User, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getAgent } from '@/lib/data'
@@ -70,9 +71,13 @@ export function StepDetailPanel({
           <div>
             <h4 className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Assigned to</h4>
             <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                <span className="text-white text-sm font-medium">K</span>
-              </div>
+              <Image
+                src="/avatars/kenny.jpg"
+                alt="Kenny"
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-full object-cover"
+              />
               <div>
                 <div className="text-sm font-medium text-stone-900">Kenny</div>
                 <div className="text-xs text-stone-500">Strategy Lead</div>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   Calendar,
@@ -94,9 +95,13 @@ export function SidebarMinimal() {
 
         {/* User Profile - simplified */}
         <div className="flex items-center gap-3 px-6 py-4 mt-2">
-          <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-xs font-medium">
-            K
-          </div>
+          <Image
+            src="/avatars/kenny.jpg"
+            alt="Kenny"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full object-cover"
+          />
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-black">Kenny</div>
             <div className="text-xs text-neutral-400">Strategy Lead</div>
