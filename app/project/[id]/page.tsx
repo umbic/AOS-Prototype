@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertTriangle, CheckCircle2, Clock, FileText } from 'lucide-react'
-import { MainLayoutCentered } from '@/components/layout/main-layout-centered'
+import { MainLayout } from '@/components/layout/main-layout'
 import { ElegantCard } from '@/components/cards/elegant-card'
 import { getProject, getClient, getWorkflowsByProject, docketItems } from '@/lib/data'
 
@@ -13,11 +13,11 @@ export default function ProjectPage() {
 
   if (!project) {
     return (
-      <MainLayoutCentered>
+      <MainLayout>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-neutral-400">Project not found</p>
         </div>
-      </MainLayoutCentered>
+      </MainLayout>
     )
   }
 
@@ -33,7 +33,7 @@ export default function ProjectPage() {
   const totalSteps = workflows.reduce((acc, w) => acc + w.steps.length, 0)
 
   return (
-    <MainLayoutCentered pageContext={project.name}>
+    <MainLayout pageContext={project.name}>
       <div className="flex-1 px-12 py-10">
         <div className="w-full max-w-5xl mx-auto">
           {/* Back link */}
@@ -165,6 +165,6 @@ export default function ProjectPage() {
           </div>
         </div>
       </div>
-    </MainLayoutCentered>
+    </MainLayout>
   )
 }

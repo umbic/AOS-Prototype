@@ -36,16 +36,7 @@ export default function CalendarPage() {
   }
 
   return (
-    <MainLayout
-      rightRail={
-        selectedEvent && (
-          <EventDetailPanel
-            event={selectedEvent}
-            onClose={() => setSelectedEvent(null)}
-          />
-        )
-      }
-    >
+    <MainLayout>
       <div className="flex flex-col h-full">
         {/* Header */}
         <header className="px-8 py-6 border-b border-stone-200 bg-white">

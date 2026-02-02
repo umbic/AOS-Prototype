@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Send, Paperclip, ChevronRight } from 'lucide-react'
-import { MainLayoutCentered } from '@/components/layout/main-layout-centered'
+import { MainLayout } from '@/components/layout/main-layout'
 import { getDocketItem, getWorkflow } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
@@ -37,11 +37,11 @@ export default function TaskDetailPage() {
 
   if (!docketItem) {
     return (
-      <MainLayoutCentered>
+      <MainLayout>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-neutral-400">Task not found</p>
         </div>
-      </MainLayoutCentered>
+      </MainLayout>
     )
   }
 
@@ -75,7 +75,7 @@ export default function TaskDetailPage() {
   const quickActions = getQuickActions(docketItem.id)
 
   return (
-    <MainLayoutCentered pageContext={docketItem.title}>
+    <MainLayout pageContext={docketItem.title}>
       <div className="flex-1 flex flex-col h-screen">
         {/* Minimal header */}
         <header className="px-12 py-4 border-b border-neutral-100 bg-white">
@@ -210,7 +210,7 @@ export default function TaskDetailPage() {
           </div>
         </div>
       </div>
-    </MainLayoutCentered>
+    </MainLayout>
   )
 }
 

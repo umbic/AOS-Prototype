@@ -29,19 +29,7 @@ export default function AgentsPage() {
   )
 
   return (
-    <MainLayout
-      rightRail={
-        selectedAgent && (
-          <AgentCard
-            agent={selectedAgent}
-            variant="detail"
-            onConfigure={() => alert('Configure agent: ' + selectedAgent.name)}
-            onAddToProject={() => alert('Add to project: ' + selectedAgent.name)}
-            onChat={() => alert('Chat with: ' + selectedAgent.name)}
-          />
-        )
-      }
-    >
+    <MainLayout>
       <div className="flex flex-col h-full">
         {/* Header */}
         <header className="px-8 py-6 border-b border-stone-200 bg-white">

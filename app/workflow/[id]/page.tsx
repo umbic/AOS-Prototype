@@ -33,19 +33,7 @@ export default function WorkflowPage() {
   const activeStep = selectedStep || currentStep
 
   return (
-    <MainLayout
-      rightRail={
-        activeStep && (
-          <StepDetailPanel
-            step={activeStep}
-            onMarkComplete={() => {}}
-            onSkip={() => {}}
-            onReassign={() => {}}
-            onChatWithAgent={() => {}}
-          />
-        )
-      }
-    >
+    <MainLayout>
       <div className="flex flex-col h-full">
         {/* Header */}
         <header className="px-8 py-5 border-b border-stone-200 bg-white">
