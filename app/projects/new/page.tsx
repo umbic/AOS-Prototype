@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Check, Bot, GitBranch, Calendar, ChevronDown } from 'lucide-react'
 import { MainLayout } from '@/components/layout/main-layout'
 import { clients, workflowTemplates, agents, getWorkflowTemplate } from '@/lib/data'
-import { WorkflowTemplate, Agent } from '@/lib/types'
+import { Agent } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 type Step = 1 | 2 | 3
@@ -18,7 +18,7 @@ const projectTypes = [
   { id: 'operations', label: 'Operations', description: 'Operational or process workflow' },
 ]
 
-export default function NewProjectPage() {
+function NewProjectContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const preselectedTemplateId = searchParams.get('template')
@@ -395,5 +395,19 @@ export default function NewProjectPage() {
         </footer>
       </div>
     </MainLayout>
+  )
+}
+
+export default function NewProjectPage() {
+  return (
+    <Suspense fallback={
+      <MainLayout pageContext="New Project">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-stone-500">Loading...</div>
+        </div>
+      </MainLayout>
+    }>
+      <NewProjectContent />
+    </Suspense>
   )
 }
