@@ -7,6 +7,11 @@ AgencyOS is an agency workflow management platform prototype built with Next.js 
 **Live URL:** https://aos-prototype.vercel.app
 **GitHub:** https://github.com/umbic/AOS-Prototype
 
+### Access Control
+- **Password:** `margin call` (case-insensitive)
+- **Mobile:** Blocked — shows "Touch Grass" page
+- **Auth cookie:** Lasts 30 days
+
 ## Design Philosophy
 
 **This isn't a dashboard you check. It's a workspace you inhabit.**
@@ -72,6 +77,9 @@ The system knows you, knows your projects, and meets you where you are. It's les
 
 ```
 /app
+  /api/auth                 # Password verification endpoint
+  /login                    # Password entry page
+  /mobile-blocked           # "Touch Grass" page for mobile visitors
   /today                    # Home - newspaper-style daily brief
   /today/[id]               # Task detail - agent-first briefing
   /project/[id]             # Project overview
@@ -84,6 +92,8 @@ The system knows you, knows your projects, and meets you where you are. It's les
   /calendar                 # Calendar view
   /team                     # Team management
   /settings                 # Settings
+
+middleware.ts               # Auth + mobile detection
 
 /components
   /layout
@@ -113,6 +123,7 @@ The system knows you, knows your projects, and meets you where you are. It's les
 /public
   /avatars
     kenny.jpg               # Kenny's profile picture
+  touch-grass.jpg           # Mobile block background image
 ```
 
 ## Mock Data
@@ -200,7 +211,8 @@ git push             # Triggers Vercel deploy
 
 - This is a **prototype** — functionality is simulated with mock data
 - AI responses are contextual but predefined (no real AI backend)
-- Designed for desktop; mobile responsiveness is limited
+- **Desktop only** — Mobile visitors see "Touch Grass" block page
+- **Password protected** — Password is `margin call` (env var `SITE_PASSWORD`)
 - Dotti (green dot) is always present in bottom-right corner
 - Single client (Google) — no multi-client UI complexity
 - See `/error-log.md` for session mistakes to avoid

@@ -9,18 +9,48 @@ AgencyOS is a high-fidelity prototype for an AI-agent-powered agency workflow ma
 
 ---
 
-## CURRENT STATE (Feb 2, 2026 - Night)
+## CURRENT STATE (Feb 2, 2026 - Late Night)
 
 ### Session Summary
 
-This session focused on showcasing the AgencyOS value prop — AI agents doing real work with humans directing the system:
+This session added access control for the prototype:
 
-1. **Task Detail Page Redesign** — Agent-first structure with confidence indicators and reasoning
-2. **Today Page Personalization** — Personal nudges, priority dots, removed redundant UI
+1. **Password Protection** — Simple password gate to control who can access the demo
+2. **Mobile Block** — Custom "Touch Grass" page blocks mobile/tablet visitors
 
 ---
 
 ### Features Implemented This Session
+
+#### 1. Password Protection
+**Files:** `middleware.ts`, `/app/login/page.tsx`, `/app/api/auth/route.ts`
+
+- Single password entry (no username)
+- Password: `margin call` (case-insensitive)
+- Stored in `SITE_PASSWORD` env variable on Vercel
+- Auth cookie lasts 30 days
+- Clean login page matching app aesthetic
+
+#### 2. Mobile Block
+**Files:** `middleware.ts`, `/app/mobile-blocked/page.tsx`, `/public/touch-grass.jpg`
+
+- Middleware detects mobile user agents
+- Redirects to `/mobile-blocked` page
+- Full-screen "Touch Grass" background image
+- Text: "Touch Grass" + "AgencyOS is only available on Desktop"
+
+---
+
+## PREVIOUS SESSION (Feb 2, 2026 - Night)
+
+### Session Summary
+
+Previous session focused on showcasing the AgencyOS value prop — AI agents doing real work with humans directing the system:
+
+1. **Task Detail Page Redesign** — Agent-first structure with confidence indicators and reasoning
+2. **Today Page Personalization** — Personal nudges, priority dots, removed redundant UI
+
+### Features Implemented Previous Session
 
 #### 1. Task Detail Page Redesign
 **Location:** `/app/today/[id]/page.tsx`
@@ -190,4 +220,4 @@ git push            # Triggers Vercel deploy
 
 ---
 
-*Last updated: February 2, 2026 (Night)*
+*Last updated: February 2, 2026 (Late Night)*
